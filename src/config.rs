@@ -1,6 +1,11 @@
+//! # Config
+//!
+//! Library parsing the taskmasterd and taskmasterctl configuration files.
+
 use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
+    error::Error,
     fs::File,
     path::{Path, PathBuf},
     process,
@@ -88,10 +93,8 @@ impl Default for Config {
     }
 }
 
-pub fn parse(
-    file_name: &Path,
-) -> Result<HashMap<String, HashMap<String, Config>>, serde_yaml::Error> {
-    let file = File::open(&file_name).expect("Unable to open config file");
+pub fn parse(file_name: &Path) -> Result<HashMap<std::string::String, HashMap<std::string::String, Config>>, Box<dyn Error>> {
+    let file = File::open(&file_name)?;
     let d: HashMap<String, HashMap<String, Config>> = serde_yaml::from_reader(file)?;
     Ok(d)
 }

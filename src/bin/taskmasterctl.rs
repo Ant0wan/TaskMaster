@@ -1,6 +1,9 @@
 use liner::{Completer, Context};
-use std::io::{Read, Write};
-use std::{convert::TryFrom, net::TcpStream};
+use std::{
+    convert::TryFrom,
+    io::{Read, Write},
+    net::TcpStream,
+};
 use taskmaster::{command::Command, DEFAULT_ADDR};
 
 /// Prompt displayed when using taskmaster in interactive mode.
