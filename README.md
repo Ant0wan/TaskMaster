@@ -41,7 +41,8 @@ Taskmaster is a - 42 project - client/server implementation that allows users to
 
 ### Built With
 
-TBD
+Built with Docker using `docker build -t taskmaster[ctl|d]:v0 -f [ctl|d].Dockerfile .`
+
 
 ## Getting Started
 
