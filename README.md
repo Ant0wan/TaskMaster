@@ -7,5 +7,7 @@ https://csjourney.com/managing-processes-with-supervisor-in-depth-tutorial/
 https://www.elao.com/blog/infra/utiliser-supervisor-pour-controler-ses-services-applicatifs
 
 #### Official Documentation
-http://supervisord.org/
+[Supervisord](http://supervisord.org/)
 
+#### Official Github Organization
+[Github/Supervisor](https://github.com/Supervisor)
