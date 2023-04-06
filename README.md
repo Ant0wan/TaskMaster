@@ -1,3 +1,16 @@
+<br />
+<p align="center">
+  <a href="">
+    <img src=".logo.png" alt="Logo" width="90" height="90">
+  </a>
+
+  <h1 align="center">Taskmaster</h1>
+
+  <p align="center"><i>Unix-like process control system that facilitates the monitoring and management of long-running processes.</i>
+  </p>
+</p>
+
+---
 
 #### Sources
 https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps
