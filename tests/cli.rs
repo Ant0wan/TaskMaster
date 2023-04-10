@@ -7,6 +7,13 @@ fn runs() {
 }
 
 #[test]
+fn output() {
+    let mut cmd = Command::cargo_bin("taskmaster").unwrap();
+    cmd.assert().success().stdout("This is Taskmaster\n");
+}
+
+
+#[test]
 fn taskmasterctl_runs() {
     let mut cmd = Command::cargo_bin("taskmasterctl").unwrap();
     cmd.assert().success();
