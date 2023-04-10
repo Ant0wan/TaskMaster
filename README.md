@@ -13,11 +13,15 @@
 ---
 
 #### Sources
-https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps
-https://blog.programster.org/getting-started-with-supervisor
-https://blog.knoldus.com/how-to-use-supervisor-in-linux/
-https://csjourney.com/managing-processes-with-supervisor-in-depth-tutorial/
-https://www.elao.com/blog/infra/utiliser-supervisor-pour-controler-ses-services-applicatifs
+[how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps](https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps)
+
+[getting-started-with-supervisor](https://blog.programster.org/getting-started-with-supervisor)
+
+[how-to-use-supervisor-in-linux](https://blog.knoldus.com/how-to-use-supervisor-in-linux/)
+
+[managing-processes-with-supervisor-in-depth-tutorial](https://csjourney.com/managing-processes-with-supervisor-in-depth-tutorial/)
+
+[utiliser-supervisor-pour-controler-ses-services-applicatifs](https://www.elao.com/blog/infra/utiliser-supervisor-pour-controler-ses-services-applicatifs)
 
 #### Official Documentation
 [Supervisord](http://supervisord.org/)
