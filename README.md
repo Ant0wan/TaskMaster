@@ -13,18 +13,14 @@
 ---
 
 #### Sources
-[how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps](https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps)
-
-[getting-started-with-supervisor](https://blog.programster.org/getting-started-with-supervisor)
-
-[how-to-use-supervisor-in-linux](https://blog.knoldus.com/how-to-use-supervisor-in-linux/)
-
-[managing-processes-with-supervisor-in-depth-tutorial](https://csjourney.com/managing-processes-with-supervisor-in-depth-tutorial/)
-
-[utiliser-supervisor-pour-controler-ses-services-applicatifs](https://www.elao.com/blog/infra/utiliser-supervisor-pour-controler-ses-services-applicatifs)
+- [How to Install and Manage Supervisor on Ubuntu and Debian VPS](https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps)
+- [Getting Started with Supervisor](https://blog.programster.org/getting-started-with-supervisor)
+- [How to Use Supervisor in Linux](https://blog.knoldus.com/how-to-use-supervisor-in-linux/)
+- [Managing Processes with Supervisor - In-Depth Tutorial](https://csjourney.com/managing-processes-with-supervisor-in-depth-tutorial/)
+- [Utiliser Supervisor pour contrôler ses services applicatifs](https://www.elao.com/blog/infra/utiliser-supervisor-pour-controler-ses-services-applicatifs)
 
 #### Official Documentation
-[Supervisord](http://supervisord.org/)
+- [Supervisord](http://supervisord.org/)
 
 #### Official Github Organization
-[Github/Supervisor](https://github.com/Supervisor)
+- [Github/Supervisor](https://github.com/Supervisor)
