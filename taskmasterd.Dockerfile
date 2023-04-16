@@ -5,14 +5,8 @@ COPY . .
 RUN cargo install --bin taskmasterd --path .
 
 FROM ubuntu:22.04
-#RUN apt-get update \
-#	&& apt-get install -y <extra-runtime-dependencies> \
-#	&& rm -rf /var/lib/apt/lists/*
 COPY --from=builder /usr/local/cargo/bin/taskmasterd /usr/local/bin/taskmasterd
 CMD ["taskmasterd"]
-
-
-
 
 #FROM ubuntu:22.04
 #RUN apt-get update \
