@@ -6,4 +6,4 @@ RUN apt-get update \
 RUN mkdir -p /var/log/supervisor
 COPY config/supervisord.conf /etc/supervisor/supervisord.conf
 COPY tools/ngnix.conf /etc/supervisor/conf.d/nginx.conf
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
