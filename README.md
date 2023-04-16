@@ -24,6 +24,7 @@
 - [How to Use Supervisor in Linux](https://blog.knoldus.com/how-to-use-supervisor-in-linux/)
 - [Managing Processes with Supervisor - In-Depth Tutorial](https://csjourney.com/managing-processes-with-supervisor-in-depth-tutorial/)
 - [Utiliser Supervisor pour contrôler ses services applicatifs](https://www.elao.com/blog/infra/utiliser-supervisor-pour-controler-ses-services-applicatifs)
+- [Systemd vs Supervisor](https://ege.dev/posts/systemd-vs-supervisor/)
 
 #### Official Documentation
 - [Supervisord](http://supervisord.org/)
