@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:22.04
 RUN apt-get update \
-	&& apt-get install -y supervisor=4.2.1-1ubuntu1 nginx wordpress mysql-server --no-install-recommends \
+	&& DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y supervisor=4.2.1-1ubuntu1 nginx wordpress mysql-server --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /var/log/supervisor
 COPY config/supervisord.conf /etc/supervisor/supervisord.conf
