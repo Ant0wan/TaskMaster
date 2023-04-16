@@ -12,6 +12,12 @@
 
 ---
 
+#### ToDo
+
+- [ ] auto release when tag + docker image build + docker image push on dockerhub/Ant0wan
+
+
+
 #### Sources
 - [How to Install and Manage Supervisor on Ubuntu and Debian VPS](https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps)
 - [Getting Started with Supervisor](https://blog.programster.org/getting-started-with-supervisor)
