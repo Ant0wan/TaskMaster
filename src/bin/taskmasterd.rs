@@ -1,14 +1,14 @@
 use std::env;
 
 fn print_usage() {
-    println!("Usage: /usr/bin/supervisord [options]");
+    println!("Usage: /usr/bin/taskmasterd [options]");
     println!("Options:");
     println!("-c/--configuration FILENAME -- configuration file path (searches if not given)");
     println!("-n/--nodaemon -- run in the foreground (same as 'nodaemon=true' in config file)");
     println!("-s/--silent -- no logs to stdout (maps to 'silent=true' in config file)");
     println!("-h/--help -- print this usage message and exit");
-    println!("-v/--version -- print supervisord version number and exit");
-    println!("-u/--user USER -- run supervisord as this user (or numeric uid)");
+    println!("-v/--version -- print taskmasterd version number and exit");
+    println!("-u/--user USER -- run taskmasterd as this user (or numeric uid)");
     println!("-m/--umask UMASK -- use this umask for daemon subprocess (default is 022)");
     println!("-d/--directory DIRECTORY -- directory to chdir to when daemonized");
     println!("-l/--logfile FILENAME -- use FILENAME as logfile path");
@@ -16,14 +16,14 @@ fn print_usage() {
     println!("-z/--logfile_backups NUM -- number of backups to keep when max bytes reached");
     println!("-e/--loglevel LEVEL -- use LEVEL as log level (debug,info,warn,error,critical)");
     println!("-j/--pidfile FILENAME -- write a pid file for the daemon process to FILENAME");
-    println!("-i/--identifier STR -- identifier used for this instance of supervisord");
+    println!("-i/--identifier STR -- identifier used for this instance of taskmasterd");
     println!("-q/--childlogdir DIRECTORY -- the log directory for child process logs");
     println!("-k/--nocleanup -- prevent the process from performing cleanup (removal of");
     println!("                  old automatic child log files) at startup.");
     println!("-a/--minfds NUM -- the minimum number of file descriptors for start success");
     println!("-t/--strip_ansi -- strip ansi escape codes from process output");
     println!("--minprocs NUM -- the minimum number of processes available for start success");
-    println!("--profile_options OPTIONS -- run supervisord under profiler and output");
+    println!("--profile_options OPTIONS -- run taskmasterd under profiler and output");
     println!("                              results based on OPTIONS, which is a comma-sep'd");
     println!("                              list of 'cumulative', 'calls', and/or 'callers',");
     println!("                              e.g. 'cumulative,callers')");
