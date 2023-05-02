@@ -1,5 +1,5 @@
 use std::env;
-use taskmaster::d::parse_ini_file;
+use taskmaster::d::config_parser::parse_ini_file;
 
 fn print_usage() {
     println!("Usage: /usr/bin/taskmasterd [options]");
