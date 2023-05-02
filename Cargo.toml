@@ -5,5 +5,13 @@ edition = "2021"
 
 [dependencies]
 
+[[bin]]
+name = "taskmasterctl"
+path = "src/bin/ctl.rs"
+
+[[bin]]
+name = "taskmasterd"
+path = "src/bin/d.rs"
+
 [dev-dependencies]
 assert_cmd = "1"
