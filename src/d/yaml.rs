@@ -1,9 +1,24 @@
 use serde::Deserialize;
+use std::fs::File;
+use std::io::Read;
+
+pub fn parse_yaml_file(filename: &str) -> Result<YamlConfig, Box<dyn std::error::Error>> {
+    // Read the contents of the YAML file
+    let mut file = File::open(filename)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+
+    // Deserialize the YAML contents into the YamlConfig struct
+    let config: YamlConfig = serde_yaml::from_str(&contents)?;
+
+    Ok(config)
+}
 
 #[derive(Debug, Deserialize)]
 pub struct YamlConfig {
     unix_http_server: UnixHttpServer,
     supervisord: Supervisord,
+    #[serde(rename = "rpcinterface:supervisor")]
     rpcinterface_supervisor: RpcInterfaceSupervisor,
     supervisorctl: SupervisorCtl,
     include: Include,
@@ -26,6 +41,7 @@ pub struct Supervisord {
 
 #[derive(Debug, Deserialize)]
 pub struct RpcInterfaceSupervisor {
+    #[serde(rename = "supervisor.rpcinterface_factory")]
     supervisor_rpcinterface_factory: String,
 }
 
