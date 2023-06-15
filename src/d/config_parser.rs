@@ -38,9 +38,18 @@ pub fn parse_ini_file(filename: &str) -> Result<IniConfig, std::io::Error> {
     let mut current_section: String = String::new();
 
     for line in contents.lines() {
-        let line: &str = line.trim();
-        if line.starts_with('#') || line.is_empty() {
+        let mut line: &str = line.trim();
+        if line.starts_with('#') || line.starts_with(';') || line.is_empty() {
             continue;
+        }
+
+        if let Some(comment_idx) = line.find(|c| c == '#' || c == ';') {
+            // Remove the comment portion of the line
+            let line_without_comment = &line[..comment_idx].trim();
+            if line_without_comment.is_empty() {
+                continue;
+            }
+            line = line_without_comment;
         }
 
         if line.starts_with('[') && line.ends_with(']') {
