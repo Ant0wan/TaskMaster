@@ -1,7 +1,7 @@
 use taskmaster::d::cli::{parse_args, print_usage, Args};
-use taskmaster::d::ini::parse_ini_file;
-use taskmaster::d::ini::IniConfig;
-use taskmaster::d::yaml::{parse_yaml_file, YamlConfig};
+//use taskmaster::d::config::parse_ini_file;
+//use taskmaster::d::ini::IniConfig;
+use taskmaster::d::config::{parse_yaml_file, Config};
 
 fn main() {
     let args: Args = parse_args();
@@ -9,10 +9,10 @@ fn main() {
         print_usage()
     }
     if let Some(filename) = args.configuration.as_deref() {
-        let configy: YamlConfig = parse_yaml_file(filename).unwrap();
+        let configy: Config = parse_yaml_file(filename).unwrap();
         println!("{:#?}", configy);
-        let config: IniConfig = parse_ini_file(filename).unwrap();
-        println!("{:#?}", config);
+        // let config: IniConfig = parse_ini_file(filename).unwrap();
+        // println!("{:#?}", config);
     } else {
         println!("No valide configuration file provided.");
     }
