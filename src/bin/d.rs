@@ -1,6 +1,6 @@
 use taskmaster::d::cli::{parse_args, print_usage, Args};
-use taskmaster::d::config_parser::parse_ini_file;
-use taskmaster::d::config_parser::IniConfig;
+use taskmaster::d::ini::parse_ini_file;
+use taskmaster::d::ini::IniConfig;
 
 fn main() {
     let args: Args = parse_args();

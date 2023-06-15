@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 serde_yaml = "0.9.21"
+serde = "1.0.24"
 
 [[bin]]
 name = "taskmasterctl"
