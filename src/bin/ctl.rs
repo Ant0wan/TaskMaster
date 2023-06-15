@@ -1,7 +1,7 @@
-use taskmaster::ctl::cli::{parse_args, print_usage};
+use taskmaster::ctl::cli::{parse_args, print_usage, Args};
 
 fn main() {
-    let args = parse_args();
+    let args: Args = parse_args();
     if args.help {
         print_usage();
     }

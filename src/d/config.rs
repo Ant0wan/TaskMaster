@@ -1768,4 +1768,3 @@ mod tests {
         assert_eq!(deser, all);
     }
 }
-

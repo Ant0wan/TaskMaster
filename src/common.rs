@@ -1,7 +1,7 @@
 use std::fs;
 
 fn recognize_format(file_path: &str) -> String {
-    let contents = fs::read_to_string(file_path).expect("Unable to read file");
+    let contents: String = fs::read_to_string(file_path).expect("Unable to read file");
 
     // Check if file is in INI format
     if contents.starts_with('[') {

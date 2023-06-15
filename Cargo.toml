@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+serde_yaml = "0.9.21"
 
 [[bin]]
 name = "taskmasterctl"
@@ -14,4 +15,4 @@ name = "taskmasterd"
 path = "src/bin/d.rs"
 
 [dev-dependencies]
-assert_cmd = "1"
+assert_cmd = "2.0.11"

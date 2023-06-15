@@ -42,7 +42,7 @@ impl Args {
 }
 
 pub fn parse_args() -> Args {
-    let mut args = Args::new();
+    let mut args: Args = Args::new();
 
     let mut args_iter = env::args().skip(1);
     while let Some(arg) = args_iter.next() {
