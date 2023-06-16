@@ -1,5 +1,7 @@
+use serde::de::{self, Deserializer};
 use serde::Deserialize;
 use serde_ini;
+use serde_yaml::Value;
 use std::fs::File;
 use std::io::Read;
 
@@ -22,10 +24,32 @@ pub struct UnixHttpServer {
 
 #[derive(Debug, Deserialize)]
 pub struct Supervisord {
+    #[serde(deserialize_with = "deserialize_nodaemon")]
     nodaemon: bool,
     logfile: String,
     pidfile: String,
     childlogdir: String,
+}
+
+fn deserialize_nodaemon<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Deserialize the value as a dynamic type
+    let value: Value = Deserialize::deserialize(deserializer)?;
+
+    // Try to convert the value to a boolean
+    if let Some(b) = value.as_bool() {
+        Ok(b)
+    } else if let Some(s) = value.as_str() {
+        match s {
+            "true" => Ok(true),
+            "false" => Ok(false),
+            _ => Err(de::Error::custom("Invalid value for nodaemon field")),
+        }
+    } else {
+        Err(de::Error::custom("Invalid value for nodaemon field"))
+    }
 }
 
 #[derive(Debug, Deserialize)]
