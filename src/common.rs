@@ -1,3 +1,4 @@
+use crate::common::serde_yaml::Value;
 use serde_ini;
 use serde_yaml;
 use std::fs::File;
@@ -28,5 +29,5 @@ fn is_yaml(contents: &str) -> bool {
 }
 
 fn is_ini(contents: &str) -> bool {
-    serde_ini::from_str::<serde_ini::Value>(&contents).is_ok()
+    serde_ini::from_str::<Value>(&contents).is_ok()
 }
