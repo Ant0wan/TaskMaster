@@ -31,27 +31,6 @@ pub struct Supervisord {
     childlogdir: String,
 }
 
-fn deserialize_nodaemon<'de, D>(deserializer: D) -> Result<bool, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    // Deserialize the value as a dynamic type
-    let value: Value = Deserialize::deserialize(deserializer)?;
-
-    // Try to convert the value to a boolean
-    if let Some(b) = value.as_bool() {
-        Ok(b)
-    } else if let Some(s) = value.as_str() {
-        match s {
-            "true" => Ok(true),
-            "false" => Ok(false),
-            _ => Err(de::Error::custom("Invalid value for nodaemon field")),
-        }
-    } else {
-        Err(de::Error::custom("Invalid value for nodaemon field"))
-    }
-}
-
 #[derive(Debug, Deserialize)]
 pub struct RpcInterfaceSupervisor {
     #[serde(rename = "supervisor.rpcinterface_factory")]
@@ -114,4 +93,25 @@ fn remove_inline_comments(contents: &str) -> String {
         })
         .collect::<Vec<&str>>()
         .join("\n")
+}
+
+fn deserialize_nodaemon<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Deserialize the value as a dynamic type
+    let value: Value = Deserialize::deserialize(deserializer)?;
+
+    // Try to convert the value to a boolean
+    if let Some(b) = value.as_bool() {
+        Ok(b)
+    } else if let Some(s) = value.as_str() {
+        match s {
+            "true" => Ok(true),
+            "false" => Ok(false),
+            _ => Err(de::Error::custom("Invalid value for nodaemon field")),
+        }
+    } else {
+        Err(de::Error::custom("Invalid value for nodaemon field"))
+    }
 }
