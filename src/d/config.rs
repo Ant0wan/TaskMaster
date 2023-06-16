@@ -56,8 +56,8 @@ pub struct InetHttpServer {
 
 pub fn parse_yq_file(filename: &str) -> Result<Config, Box<dyn std::error::Error>> {
     // Read the contents of the YAML/JSON file
-    let mut file = File::open(filename)?;
-    let mut contents = String::new();
+    let mut file: File = File::open(filename)?;
+    let mut contents: String = String::new();
     file.read_to_string(&mut contents)?;
 
     // Deserialize the YAML/JSON contents into the Config struct
@@ -68,8 +68,8 @@ pub fn parse_yq_file(filename: &str) -> Result<Config, Box<dyn std::error::Error
 
 pub fn parse_ini_file(filename: &str) -> Result<Config, Box<dyn std::error::Error>> {
     // Read the contents of the INI file
-    let mut file = File::open(filename)?;
-    let mut contents = String::new();
+    let mut file: File = File::open(filename)?;
+    let mut contents: String = String::new();
     file.read_to_string(&mut contents)?;
 
     // Remove inline comments from the INI contents
