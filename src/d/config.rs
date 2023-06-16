@@ -93,8 +93,25 @@ pub fn parse_ini_file(filename: &str) -> Result<Config, Box<dyn std::error::Erro
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-    // Deserialize the INI contents into the Config struct
-    let config: Config = serde_ini::from_str(&contents)?;
+    // Remove inline comments from the INI contents
+    let cleaned_contents = remove_inline_comments(&contents);
+
+    // Deserialize the cleaned INI contents into the Config struct
+    let config: Config = serde_ini::from_str(&cleaned_contents)?;
 
     Ok(config)
+}
+
+fn remove_inline_comments(contents: &str) -> String {
+    contents
+        .lines()
+        .map(|line| {
+            if let Some(position) = line.find(';') {
+                &line[..position]
+            } else {
+                line
+            }
+        })
+        .collect::<Vec<&str>>()
+        .join("\n")
 }
