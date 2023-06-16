@@ -12,8 +12,8 @@ pub enum FileFormat {
 
 pub fn recognize_file_format(filename: &str) -> Option<FileFormat> {
     if let Ok(mut file) = File::open(filename) {
-        let mut contents = String::new();
-        if let Ok(_) = file.read_to_string(&mut contents) {
+        let mut contents: String = String::new();
+        if file.read_to_string(&mut contents).is_ok() {
             if is_yaml(&contents) {
                 return Some(FileFormat::Yaml);
             } else if is_ini(&contents) {
@@ -29,5 +29,5 @@ fn is_yaml(contents: &str) -> bool {
 }
 
 fn is_ini(contents: &str) -> bool {
-    serde_ini::from_str::<Value>(&contents).is_ok()
+    serde_ini::from_str::<Value>(contents).is_ok()
 }
