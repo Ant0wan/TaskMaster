@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use serde_ini;
 use std::fs::File;
 use std::io::Read;
 
@@ -50,14 +51,26 @@ pub struct InetHttpServer {
     password: String,
 }
 
-pub fn parse_yaml_file(filename: &str) -> Result<Config, Box<dyn std::error::Error>> {
-    // Read the contents of the YAML file
+pub fn parse_yq_file(filename: &str) -> Result<Config, Box<dyn std::error::Error>> {
+    // Read the contents of the YAML/JSON file
     let mut file = File::open(filename)?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-    // Deserialize the YAML contents into the Config struct
+    // Deserialize the YAML/JSON contents into the Config struct
     let config: Config = serde_yaml::from_str(&contents)?;
+
+    Ok(config)
+}
+
+pub fn parse_ini_file(filename: &str) -> Result<Config, Box<dyn std::error::Error>> {
+    // Read the contents of the INI file
+    let mut file = File::open(filename)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+
+    // Deserialize the INI contents into the Config struct
+    let config: Config = serde_ini::from_str(&contents)?;
 
     Ok(config)
 }
