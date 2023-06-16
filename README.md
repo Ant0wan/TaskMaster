@@ -14,7 +14,16 @@
 
 #### ToDo
 
-- [ ] auto release when tag + docker image build + docker image push on dockerhub/Ant0wan
+- [ ] auto release when tag on Rust check->build->test->audit->release
+- [ ] docker image build and publish on dockerhub and in release along with binaries when tag
+- [X] parsing of the daemon config file in ini, yaml and json
+- [ ] parsing of daemon cli
+- [ ] enabling execution as daemon or not
+- [ ] succeed make use taskmasterd with supervisorctl
+- [ ] build core execution of programs and its management (use supervisorctl to run taskmasterd programs)
+
+
+#### Containers
 
 `docker run -p 8080:80 -d <nginx_supervisor>`
 

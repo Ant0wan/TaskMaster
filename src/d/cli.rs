@@ -69,6 +69,7 @@ pub fn parse_args() -> Args {
             "-s" | "--silent" => {
                 args.silent = true;
             }
+            // here would be a lot more options parsed
             "-h" | "--help" => {
                 args.help = true;
             }
