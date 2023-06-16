@@ -4,13 +4,14 @@ use serde_ini;
 use serde_yaml::Value;
 use std::fs::File;
 use std::io::Read;
+use std::process;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
     #[serde(default)]
     unix_http_server: Option<UnixHttpServer>,
-    #[serde(default)]
-    supervisord: Option<Supervisord>,
+    #[serde(default = "default_nodaemon")]
+    supervisord: Supervisord,
     #[serde(rename = "rpcinterface:supervisor", default)]
     rpcinterface_supervisor: Option<RpcInterfaceSupervisor>,
     #[serde(default)]
@@ -129,4 +130,9 @@ where
     } else {
         Ok(None)
     }
+}
+
+fn default_nodaemon() -> Supervisord {
+    println!("Error: .ini file does not include taskmasterd section\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ?
+    process::exit(1)
 }
