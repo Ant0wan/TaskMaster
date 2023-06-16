@@ -7,51 +7,68 @@ use std::io::Read;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    unix_http_server: UnixHttpServer,
-    supervisord: Supervisord,
-    #[serde(rename = "rpcinterface:supervisor")]
-    rpcinterface_supervisor: RpcInterfaceSupervisor,
-    supervisorctl: SupervisorCtl,
-    include: Include,
-    inet_http_server: InetHttpServer,
+    #[serde(default)]
+    unix_http_server: Option<UnixHttpServer>,
+    #[serde(default)]
+    supervisord: Option<Supervisord>,
+    #[serde(rename = "rpcinterface:supervisor", default)]
+    rpcinterface_supervisor: Option<RpcInterfaceSupervisor>,
+    #[serde(default)]
+    supervisorctl: Option<SupervisorCtl>,
+    #[serde(default)]
+    include: Option<Include>,
+    #[serde(default)]
+    inet_http_server: Option<InetHttpServer>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct UnixHttpServer {
-    file: String,
-    chmod: String,
+    #[serde(default)]
+    file: Option<String>,
+    #[serde(default)]
+    chmod: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Supervisord {
     #[serde(deserialize_with = "deserialize_nodaemon")]
-    nodaemon: bool,
-    logfile: String,
-    pidfile: String,
-    childlogdir: String,
+    #[serde(default)]
+    nodaemon: Option<bool>,
+    #[serde(default)]
+    logfile: Option<String>,
+    #[serde(default)]
+    pidfile: Option<String>,
+    #[serde(default)]
+    childlogdir: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct RpcInterfaceSupervisor {
     #[serde(rename = "supervisor.rpcinterface_factory")]
-    supervisor_rpcinterface_factory: String,
+    #[serde(default)]
+    supervisor_rpcinterface_factory: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct SupervisorCtl {
-    serverurl: String,
+    #[serde(default)]
+    serverurl: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Include {
-    files: String,
+    #[serde(default)]
+    files: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct InetHttpServer {
-    port: String,
-    username: String,
-    password: String,
+    #[serde(default)]
+    port: Option<String>,
+    #[serde(default)]
+    username: Option<String>,
+    #[serde(default)]
+    password: Option<String>,
 }
 
 pub fn parse_yq_file(filename: &str) -> Result<Config, Box<dyn std::error::Error>> {
@@ -95,7 +112,7 @@ fn remove_inline_comments(contents: &str) -> String {
         .join("\n")
 }
 
-fn deserialize_nodaemon<'de, D>(deserializer: D) -> Result<bool, D::Error>
+fn deserialize_nodaemon<'de, D>(deserializer: D) -> Result<Option<bool>, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -103,15 +120,13 @@ where
     let value: Value = Deserialize::deserialize(deserializer)?;
 
     // Try to convert the value to a boolean
-    if let Some(b) = value.as_bool() {
-        Ok(b)
-    } else if let Some(s) = value.as_str() {
+    if let Some(s) = value.as_str() {
         match s {
-            "true" => Ok(true),
-            "false" => Ok(false),
+            "true" => Ok(Some(true)),
+            "false" => Ok(Some(false)),
             _ => Err(de::Error::custom("Invalid value for nodaemon field")),
         }
     } else {
-        Err(de::Error::custom("Invalid value for nodaemon field"))
+        Ok(None)
     }
 }
