@@ -88,7 +88,10 @@ pub fn parse_args() -> Args {
                 args.profile_options = Some(args_iter.next().expect("missing profile options"));
             }
             _ => {
-                eprintln!("Unknown argument: {}", arg);
+                eprintln!(
+                    "Error: option {} not recognized\nFor help, use /usr/bin/taskmasterd -h",
+                    &arg[0..2]
+                );
             }
         }
     }
