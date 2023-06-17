@@ -35,6 +35,19 @@ pub struct Args {
     pub silent: bool,
     pub help: bool,
     pub version: bool,
+    pub user: Option<String>,
+    pub umask: Option<String>,
+    pub directory: Option<String>,
+    pub logfile: Option<String>,
+    pub logfile_maxbytes: Option<String>,
+    pub logfile_backups: Option<String>,
+    pub loglevel: Option<String>,
+    pub pidfile: Option<String>,
+    pub identifier: Option<String>,
+    pub childlogdir: Option<String>,
+    pub nocleanup: bool,
+    pub minfds: Option<String>,
+    pub strip_ansi: bool,
     pub minprocs: Option<u32>,
     pub profile_options: Option<String>,
 }
@@ -47,6 +60,19 @@ impl Args {
             silent: false,
             help: false,
             version: false,
+            user: None,
+            umask: None,
+            directory: None,
+            logfile: None,
+            logfile_maxbytes: None,
+            logfile_backups: None,
+            loglevel: None,
+            pidfile: None,
+            identifier: None,
+            childlogdir: None,
+            nocleanup: false,
+            minfds: None,
+            strip_ansi: false,
             minprocs: None,
             profile_options: None,
         }
@@ -69,12 +95,67 @@ pub fn parse_args() -> Args {
             "-s" | "--silent" => {
                 args.silent = true;
             }
-            // here would be a lot more options parsed
             "-h" | "--help" => {
                 args.help = true;
             }
             "-v" | "--version" => {
                 args.version = true;
+            }
+            "-u" | "--user" => {
+                args.user = Some(args_iter.next().expect("missing user or numeric uid"));
+            }
+            "-m" | "--umask" => {
+                args.umask = Some(
+                    args_iter
+                        .next()
+                        .expect("missing umask for daemon subprocess"),
+                );
+            }
+            "-d" | "--directory" => {
+                args.directory = Some(args_iter.next().expect("missing directory to chdir to"));
+            }
+            "-l" | "--logfile" => {
+                args.logfile = Some(args_iter.next().expect("missing logfile path"));
+            }
+            "-y" | "--logfile_maxbytes" => {
+                args.logfile_maxbytes =
+                    Some(args_iter.next().expect("missing max size of logfile"));
+            }
+            "-z" | "--logfile_backups" => {
+                args.logfile_backups = Some(
+                    args_iter
+                        .next()
+                        .expect("missing number of backups for logfile"),
+                );
+            }
+            "-e" | "--loglevel" => {
+                args.loglevel = Some(args_iter.next().expect("missing log level"));
+            }
+            "-j" | "--pidfile" => {
+                args.pidfile = Some(args_iter.next().expect("missing pid file path"));
+            }
+            "-i" | "--identifier" => {
+                args.identifier = Some(args_iter.next().expect("missing identifier"));
+            }
+            "-q" | "--childlogdir" => {
+                args.childlogdir = Some(
+                    args_iter
+                        .next()
+                        .expect("missing log directory for child process logs"),
+                );
+            }
+            "-k" | "--nocleanup" => {
+                args.nocleanup = true;
+            }
+            "-a" | "--minfds" => {
+                args.minfds = Some(
+                    args_iter
+                        .next()
+                        .expect("missing minimum number of file descriptors"),
+                );
+            }
+            "-t" | "--strip_ansi" => {
+                args.strip_ansi = true;
             }
             "--minprocs" => {
                 args.minprocs = Some(
