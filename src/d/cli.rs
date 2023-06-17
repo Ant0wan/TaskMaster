@@ -1,4 +1,5 @@
 use std::env;
+use std::fmt;
 
 pub fn print_usage() {
     println!("Usage: /usr/bin/taskmasterd [options]");
@@ -79,7 +80,35 @@ impl Args {
     }
 }
 
-//The supervisord command accepts a number of command-line options. Each of these command line options overrides any equivalent value in the configuration file.
+impl fmt::Debug for Args {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Args")
+            .field("configuration", &self.configuration)
+            .field("nodaemon", &self.nodaemon)
+            .field("silent", &self.silent)
+            .field("help", &self.help)
+            .field("version", &self.version)
+            .field("user", &self.user)
+            .field("umask", &self.umask)
+            .field("directory", &self.directory)
+            .field("logfile", &self.logfile)
+            .field("logfile_maxbytes", &self.logfile_maxbytes)
+            .field("logfile_backups", &self.logfile_backups)
+            .field("loglevel", &self.loglevel)
+            .field("pidfile", &self.pidfile)
+            .field("identifier", &self.identifier)
+            .field("childlogdir", &self.childlogdir)
+            .field("nocleanup", &self.nocleanup)
+            .field("minfds", &self.minfds)
+            .field("strip_ansi", &self.strip_ansi)
+            .field("minprocs", &self.minprocs)
+            .field("profile_options", &self.profile_options)
+            .finish()
+    }
+}
+
+// The supervisord command accepts a number of command-line options.
+// Each of these command line options overrides any equivalent value in the configuration file.
 pub fn parse_args() -> Args {
     let mut args: Args = Args::new();
 

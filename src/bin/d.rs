@@ -4,6 +4,7 @@ use taskmaster::d::config::{parse_ini_file, parse_yq_file, Config};
 
 fn main() {
     let args: Args = parse_args();
+    println!("{:?}", args);
     if args.help {
         print_usage()
     }
