@@ -79,6 +79,7 @@ impl Args {
     }
 }
 
+//The supervisord command accepts a number of command-line options. Each of these command line options overrides any equivalent value in the configuration file.
 pub fn parse_args() -> Args {
     let mut args: Args = Args::new();
 
