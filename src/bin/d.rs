@@ -4,19 +4,20 @@ use taskmaster::d::config::{parse_ini_file, parse_yq_file, Config};
 
 fn main() {
     let args: Args = parse_args();
-    println!("{:?}", args);
+    println!("{:?}", args); // Debug
     if args.help {
-        print_usage()
+        print_usage();
+        std::process::exit(0);
     }
     if let Some(filename) = args.configuration.as_deref() {
         match recognize_file_format(filename) {
             Some(FileFormat::Yaml) => {
                 let config: Config = parse_yq_file(filename).unwrap();
-                println!("{:#?}", config);
+                println!("{:#?}", config); // Debug
             }
             Some(FileFormat::Ini) => {
                 let config: Config = parse_ini_file(filename).unwrap();
-                println!("{:#?}", config);
+                println!("{:#?}", config); // Debug
             }
             None => println!("Unrecognized file format"),
         }

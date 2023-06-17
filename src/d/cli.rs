@@ -2,7 +2,8 @@ use std::env;
 use std::fmt;
 
 pub fn print_usage() {
-    println!("Usage: /usr/bin/taskmasterd [options]");
+    println!("taskmasterd -- run a set of applications as daemons.\n");
+    println!("Usage: /usr/bin/taskmasterd [options]\n");
     println!("Options:");
     println!("-c/--configuration FILENAME -- configuration file path (searches if not given)");
     println!("-n/--nodaemon -- run in the foreground (same as 'nodaemon=true' in config file)");
