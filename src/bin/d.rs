@@ -40,11 +40,10 @@ fn main() {
         ];
 
         for file_path in LOOKAT.iter() {
-            if let Ok(metadata) = fs::metadata(file_path) {
-                if metadata.is_file() && metadata.permissions().readonly() {
-                    args.configuration = Some(file_path.to_string());
-                    break;
-                }
+            if let Ok(_content) = fs::read_to_string(file_path) {
+                println!("configuration file: {:?}", file_path); // Debug
+                args.configuration = Some(file_path.to_string());
+                break;
             }
         }
     }
