@@ -2,6 +2,7 @@ use std::fs;
 use taskmaster::common::{recognize_file_format, FileFormat};
 use taskmaster::d::cli::{parse_args, print_usage, Args};
 use taskmaster::d::config::{parse_ini_file, parse_yq_file, Config};
+use taskmaster::d::exec::exec;
 
 fn main() {
     let mut args: Args = parse_args();
@@ -64,5 +65,6 @@ fn main() {
         println!("No valid configuration file provided.");
     }
 
-    std::process::exit(0);
+    // can defer Args
+    exec()
 }
