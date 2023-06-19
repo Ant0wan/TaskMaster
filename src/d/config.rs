@@ -46,28 +46,41 @@ pub struct Supervisord {
     pub pidfile: String,
     #[serde(default = "default_umask")]
     pub umask: u32,
-    #[serde(default = "default_nodaemon")]
+    #[serde(default = "default_false")]
     pub nodaemon: bool,
-    #[serde(default = "default_silent")]
+    #[serde(default = "default_false")]
     pub silent: bool,
     #[serde(default = "default_minfds")]
     pub minfds: u32,
     #[serde(default = "default_minprocs")]
     pub minprocs: u32,
-    #[serde(default = "default_nocleanup")]
+    #[serde(default = "default_false")]
     pub nocleanup: bool,
     #[serde(default = "default_childlogdir")]
     pub childlogdir: String,
-    #[serde(default)]
-    pub user: Option<String>,
-    #[serde(default)]
-    pub directory: Option<String>,
-    #[serde(default)]
+    #[serde(default = "default_user")]
+    pub user: String,
+    #[serde(default = "default_directory")]
+    pub directory: String,
+    #[serde(default = "default_false")]
     pub strip_ansi: bool,
     #[serde(default)]
     pub environment: Option<String>,
     #[serde(default = "default_identifier")]
     pub identifier: String,
+}
+
+fn default_directory() -> String {
+    if let Ok(dir) = env::current_dir() {
+        dir.to_string_lossy().into_owned()
+    } else {
+        // Should exit with error message
+        String::from("Unknown")
+    }
+}
+
+fn default_user() -> String {
+    env::var("USER").unwrap_or_else(|_| String::from("Unknown"))
 }
 
 fn default_childlogdir() -> String {
@@ -107,15 +120,7 @@ fn default_minprocs() -> u32 {
     200
 }
 
-fn default_nocleanup() -> bool {
-    false
-}
-
-fn default_nodaemon() -> bool {
-    false
-}
-
-fn default_silent() -> bool {
+fn default_false() -> bool {
     false
 }
 
