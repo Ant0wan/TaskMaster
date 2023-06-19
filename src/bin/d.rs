@@ -49,7 +49,6 @@ fn main() {
             }
         }
     }
-
     if let Some(filename) = args.configuration.as_deref() {
         match recognize_file_format(filename) {
             Some(FileFormat::Yaml) => {

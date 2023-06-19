@@ -46,14 +46,17 @@ pub struct Supervisord {
     pub pidfile: String,
     #[serde(default = "default_umask")]
     pub umask: u32,
+    #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub nodaemon: bool,
+    #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub silent: bool,
     #[serde(default = "default_minfds")]
     pub minfds: u32,
     #[serde(default = "default_minprocs")]
     pub minprocs: u32,
+    #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub nocleanup: bool,
     #[serde(default = "default_childlogdir")]
@@ -62,6 +65,7 @@ pub struct Supervisord {
     pub user: String,
     #[serde(default = "default_directory")]
     pub directory: String,
+    #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub strip_ansi: bool,
     #[serde(default)]
@@ -131,6 +135,25 @@ fn default_false() -> bool {
 
 fn default_identifier() -> String {
     String::from("supervisor")
+}
+
+fn deserialize_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Deserialize the value as a dynamic type
+    let value: Value = Deserialize::deserialize(deserializer)?;
+
+    // Try to convert the value to a boolean
+    if let Some(s) = value.as_str() {
+        match s {
+            "true" => Ok(true),
+            "false" => Ok(false),
+            _ => Err(de::Error::custom("Invalid value for a boolean field")),
+        }
+    } else {
+        Ok(false)
+    }
 }
 
 #[derive(Debug, Deserialize)]
