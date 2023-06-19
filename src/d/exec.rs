@@ -1,4 +1,6 @@
+use std::process::exit;
+
 pub fn exec() {
     println!("Hello world !");
-    std::process::exit(0);
+    exit(0);
 }
