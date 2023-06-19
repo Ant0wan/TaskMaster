@@ -4,7 +4,7 @@ use serde_ini;
 use serde_yaml::Value;
 use std::fs::File;
 use std::io::Read;
-use std::process;
+use std::process::exit;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -136,5 +136,5 @@ fn default_nodaemon() -> Supervisord {
     println!("Error: .ini file does not include taskmasterd section\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ?
                                                                                                               // could be different path
                                                                                                               // could be .ini but also json or yaml
-    process::exit(1)
+    exit(1)
 }
