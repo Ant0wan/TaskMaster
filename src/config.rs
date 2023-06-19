@@ -7,6 +7,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process::exit;
+use users::get_current_username;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -98,12 +99,13 @@ fn default_chown() -> String {
 }
 
 fn default_user() -> String {
-    if let Ok(user) = env::var("USER") {
-        user
-    } else {
-        eprintln!("Could not find which user to use");
-        exit(2)
+    if let Some(user) = get_current_username() {
+        if let Some(user_name) = user.to_str() {
+            return user_name.to_string();
+        }
     }
+    eprintln!("Could not find which user to use");
+    exit(2);
 }
 
 fn default_group() -> String {
