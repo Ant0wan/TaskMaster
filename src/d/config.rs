@@ -74,13 +74,18 @@ fn default_directory() -> String {
     if let Ok(dir) = env::current_dir() {
         dir.to_string_lossy().into_owned()
     } else {
-        // Should exit with error message
-        String::from("Unknown")
+        eprintln!("Could not find current directory");
+        exit(2)
     }
 }
 
 fn default_user() -> String {
-    env::var("USER").unwrap_or_else(|_| String::from("Unknown"))
+    if let Ok(user) = env::var("USER") {
+        user
+    } else {
+        eprintln!("Could not find which user to use");
+        exit(2)
+    }
 }
 
 fn default_childlogdir() -> String {
