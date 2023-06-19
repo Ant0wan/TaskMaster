@@ -2,15 +2,17 @@ use serde::de::{self, Deserializer};
 use serde::Deserialize;
 use serde_ini;
 use serde_yaml::Value;
+use std::env;
 use std::fs::File;
 use std::io::Read;
+use std::path::{Path, PathBuf};
 use std::process::exit;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
     #[serde(default)]
     unix_http_server: Option<UnixHttpServer>,
-    #[serde(default = "default_nodaemon")]
+    #[serde(default = "default_supervisord")]
     supervisord: Supervisord,
     #[serde(rename = "rpcinterface:supervisor", default)]
     rpcinterface_supervisor: Option<RpcInterfaceSupervisor>,
@@ -32,15 +34,93 @@ pub struct UnixHttpServer {
 
 #[derive(Debug, Deserialize)]
 pub struct Supervisord {
-    #[serde(deserialize_with = "deserialize_nodaemon")]
+    #[serde(default = "default_logfile")]
+    pub logfile: String,
+    #[serde(default = "default_logfile_maxbytes")]
+    pub logfile_maxbytes: String,
+    #[serde(default = "default_logfile_backups")]
+    pub logfile_backups: u32,
+    #[serde(default = "default_loglevel")]
+    pub loglevel: String,
+    #[serde(default = "default_pidfile")]
+    pub pidfile: String,
+    #[serde(default = "default_umask")]
+    pub umask: u32,
+    #[serde(default = "default_nodaemon")]
+    pub nodaemon: bool,
+    #[serde(default = "default_silent")]
+    pub silent: bool,
+    #[serde(default = "default_minfds")]
+    pub minfds: u32,
+    #[serde(default = "default_minprocs")]
+    pub minprocs: u32,
+    #[serde(default = "default_nocleanup")]
+    pub nocleanup: bool,
+    #[serde(default = "default_childlogdir")]
+    pub childlogdir: String,
     #[serde(default)]
-    nodaemon: Option<bool>,
+    pub user: Option<String>,
     #[serde(default)]
-    logfile: Option<String>,
+    pub directory: Option<String>,
     #[serde(default)]
-    pidfile: Option<String>,
+    pub strip_ansi: bool,
     #[serde(default)]
-    childlogdir: Option<String>,
+    pub environment: Option<String>,
+    #[serde(default = "default_identifier")]
+    pub identifier: String,
+}
+
+fn default_childlogdir() -> String {
+    let temp_dir: PathBuf = env::temp_dir();
+    temp_dir.to_string_lossy().into_owned()
+}
+
+fn default_pidfile() -> String {
+    String::from("$CWD/supervisord.pid")
+}
+
+fn default_logfile() -> String {
+    String::from("$CWD/supervisord.log")
+}
+
+fn default_logfile_maxbytes() -> String {
+    String::from("50MB")
+}
+
+fn default_logfile_backups() -> u32 {
+    10
+}
+
+fn default_loglevel() -> String {
+    String::from("info")
+}
+
+fn default_umask() -> u32 {
+    0o022
+}
+
+fn default_minfds() -> u32 {
+    1024
+}
+
+fn default_minprocs() -> u32 {
+    200
+}
+
+fn default_nocleanup() -> bool {
+    false
+}
+
+fn default_nodaemon() -> bool {
+    false
+}
+
+fn default_silent() -> bool {
+    false
+}
+
+fn default_identifier() -> String {
+    String::from("supervisor")
 }
 
 #[derive(Debug, Deserialize)]
@@ -113,26 +193,7 @@ fn remove_inline_comments(contents: &str) -> String {
         .join("\n")
 }
 
-fn deserialize_nodaemon<'de, D>(deserializer: D) -> Result<Option<bool>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    // Deserialize the value as a dynamic type
-    let value: Value = Deserialize::deserialize(deserializer)?;
-
-    // Try to convert the value to a boolean
-    if let Some(s) = value.as_str() {
-        match s {
-            "true" => Ok(Some(true)),
-            "false" => Ok(Some(false)),
-            _ => Err(de::Error::custom("Invalid value for nodaemon field")),
-        }
-    } else {
-        Ok(None)
-    }
-}
-
-fn default_nodaemon() -> Supervisord {
+fn default_supervisord() -> Supervisord {
     println!("Error: .ini file does not include taskmasterd section\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ? could be different path could be .ini but also json or yaml
     exit(1)
 }
