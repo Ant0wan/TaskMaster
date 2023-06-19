@@ -133,8 +133,6 @@ where
 }
 
 fn default_nodaemon() -> Supervisord {
-    println!("Error: .ini file does not include taskmasterd section\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ?
-                                                                                                              // could be different path
-                                                                                                              // could be .ini but also json or yaml
+    println!("Error: .ini file does not include taskmasterd section\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ? could be different path could be .ini but also json or yaml
     exit(1)
 }
