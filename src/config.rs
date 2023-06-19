@@ -27,9 +27,19 @@ pub struct Config {
 #[derive(Debug, Deserialize)]
 pub struct UnixHttpServer {
     #[serde(default)]
-    file: Option<String>,
+    pub file: Option<String>,
+    #[serde(default = "default_chmod")]
+    pub chmod: u32,
+    #[serde(default = "default_chown")]
+    pub chown: String,
+    #[serde(default = "default_user")]
+    pub username: String,
     #[serde(default)]
-    chmod: Option<String>,
+    pub password: Option<String>,
+}
+
+fn default_chmod() -> u32 {
+    0o022
 }
 
 #[derive(Debug, Deserialize)]
@@ -83,9 +93,22 @@ fn default_directory() -> String {
     }
 }
 
+fn default_chown() -> String {
+    format!("{}{}", default_user(), default_group())
+}
+
 fn default_user() -> String {
     if let Ok(user) = env::var("USER") {
         user
+    } else {
+        eprintln!("Could not find which user to use");
+        exit(2)
+    }
+}
+
+fn default_group() -> String {
+    if let Ok(groupname) = env::var("GROUP") {
+        groupname
     } else {
         eprintln!("Could not find which user to use");
         exit(2)
