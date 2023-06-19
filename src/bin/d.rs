@@ -1,8 +1,8 @@
 use std::fs;
 use std::process::exit;
 use taskmaster::common::{recognize_file_format, FileFormat};
+use taskmaster::config::{parse_ini_file, parse_yq_file, Config};
 use taskmaster::d::cli::{parse_args, print_usage, Args};
-use taskmaster::d::config::{parse_ini_file, parse_yq_file, Config};
 use taskmaster::d::exec::exec;
 
 fn main() {
