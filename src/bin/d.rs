@@ -1,4 +1,5 @@
 use std::fs;
+use std::process::exit;
 use taskmaster::common::{recognize_file_format, FileFormat};
 use taskmaster::d::cli::{parse_args, print_usage, Args};
 use taskmaster::d::config::{parse_ini_file, parse_yq_file, Config};
@@ -9,7 +10,7 @@ fn main() {
     println!("{:?}", args); // Debug
     if args.help {
         print_usage();
-        std::process::exit(0);
+        exit(0);
     }
 
     if args.configuration.is_none() {
@@ -59,12 +60,22 @@ fn main() {
                 let config: Config = parse_ini_file(filename).unwrap();
                 println!("{:#?}", config); // Debug
             }
-            None => println!("Unrecognized file format"),
+            None => {
+                println!("Error: could not find config file totol");
+                forhelp();
+            }
         }
     } else {
-        println!("No valid configuration file provided.");
+        println!("Error: No config file found at default paths \
+(/usr/etc/supervisord.conf, /usr/supervisord.conf, supervisord.conf, etc/supervisord.conf, /etc/supervisord.conf, /etc/supervisor/supervisord.conf); \
+use the -c option to specify a config file at a different path");
+        forhelp();
     }
-
     // can defer Args
     exec()
+}
+
+fn forhelp() {
+    println!("For help, use /usr/bin/taskmasterd -h");
+    exit(2);
 }
