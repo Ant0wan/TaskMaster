@@ -36,20 +36,22 @@ pub struct Program {
     pub command: String,
     #[serde(default = "default_process_name")]
     pub process_name: String,
-    #[serde(default = "default_priority")]
-    pub priority: u32,
     #[serde(default = "default_numprocs")]
     pub numprocs: u32,
     #[serde(default = "default_numprocs_start")]
     pub numprocs_start: u32,
+    #[serde(default = "default_priority")]
+    pub priority: u32,
     #[serde(default = "default_true")]
+    #[serde(deserialize_with = "deserialize_bool")]
     pub autostart: bool,
-    #[serde(default)]
-    pub autorestart: Option<String>, // TODO
     #[serde(default = "default_startsecs")]
     pub startsecs: u32,
     #[serde(default = "default_startretries")]
     pub startretries: u32,
+    #[serde(default = "default_autorestart")]
+    pub autorestart: Restart,
+
     #[serde(default)]
     pub exitcodes: Option<Vec<u32>>,
     #[serde(default)]
@@ -74,6 +76,20 @@ pub struct Program {
     pub stderr_logfile_backups: Option<u32>,
     #[serde(default)]
     pub environment: Option<HashMap<String, String>>,
+}
+
+#[derive(Deserialize, PartialEq, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum Restart {
+    False,
+    Never,
+    Always,
+    True,
+    Unexpected,
+}
+
+fn default_autorestart() -> Restart {
+    Restart::Unexpected
 }
 
 fn default_priority() -> u32 {
