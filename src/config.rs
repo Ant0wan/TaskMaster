@@ -45,11 +45,11 @@ pub struct Program {
     #[serde(default = "default_true")]
     pub autostart: bool,
     #[serde(default)]
-    pub autorestart: Option<String>,
-    #[serde(default)]
-    pub startsecs: Option<u32>,
-    #[serde(default)]
-    pub startretries: Option<u32>,
+    pub autorestart: Option<String>, // TODO
+    #[serde(default = "default_startsecs")]
+    pub startsecs: u32,
+    #[serde(default = "default_startretries")]
+    pub startretries: u32,
     #[serde(default)]
     pub exitcodes: Option<Vec<u32>>,
     #[serde(default)]
@@ -85,6 +85,14 @@ fn default_numprocs_start() -> u32 {
 }
 
 fn default_numprocs() -> u32 {
+    1
+}
+
+fn default_startretries() -> u32 {
+    3
+}
+
+fn default_startsecs() -> u32 {
     1
 }
 
