@@ -58,14 +58,17 @@ pub struct Program {
     pub stopsignal: StopSignal,
     //    #[serde(default = "default_stopwaitsecs")]
     //    pub stopwaitsecs: u32,
-    //#[serde(default = "default_false")]
-    //pub stopasgroup: bool,
-    //#[serde(default = "default_false")]
-    //pub killasgroup: bool,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub stopasgroup: bool,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub killasgroup: bool,
     #[serde(default = "default_user")]
     pub user: String,
-    //#[serde(default = "default_false")]
-    //pub redirect_stderr: bool,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub redirect_stderr: bool,
     //
     //#[serde(default)]
     //pub stdout_logfile: Option<String>,
