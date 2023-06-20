@@ -42,7 +42,7 @@ pub struct UnixHttpServer {
 }
 
 fn default_chmod() -> u32 {
-    0o022
+    0o700
 }
 
 #[derive(Debug, Deserialize)]
