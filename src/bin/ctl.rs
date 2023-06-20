@@ -1,4 +1,7 @@
-use taskmaster::ctl::cli::{parse_args, print_usage, Args};
+use std::process::exit;
+use taskmaster::ctl::cli::parse_args;
+use taskmaster::ctl::cli::print_usage;
+use taskmaster::ctl::cli::Args;
 
 fn main() {
     let args: Args = parse_args();
@@ -6,5 +9,5 @@ fn main() {
         print_usage();
     }
 
-    std::process::exit(0)
+    exit(0)
 }
