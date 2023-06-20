@@ -3,6 +3,7 @@ use serde::de::Deserializer;
 use serde::Deserialize;
 use serde_ini;
 use serde_yaml::Value;
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::Read;
@@ -25,7 +26,61 @@ pub struct Config {
     include: Option<Include>,
     #[serde(default)]
     inet_http_server: Option<InetHttpServer>,
+    #[serde(flatten)]
+    program: Option<HashMap<String, Program>>,
 } // This has to have some combination of options true or false depending whether supervisord or supervosirctl read the config
+
+#[derive(Debug, Deserialize)]
+pub struct Program {
+    #[serde(default)]
+    pub command: String,
+    #[serde(default = "default_process_name")]
+    pub process_name: String,
+    #[serde(default = "default_numprocs")]
+    pub numprocs: u32,
+    #[serde(default)]
+    pub numprocs_start: Option<u32>,
+    // #[serde(default)]
+    // pub autostart: Option<bool>,
+    #[serde(default)]
+    pub autorestart: Option<String>,
+    #[serde(default)]
+    pub startsecs: Option<u32>,
+    #[serde(default)]
+    pub startretries: Option<u32>,
+    #[serde(default)]
+    pub exitcodes: Option<Vec<u32>>,
+    #[serde(default)]
+    pub stopsignal: Option<u32>,
+    #[serde(default)]
+    pub stopwaitsecs: Option<u32>,
+    #[serde(default)]
+    pub user: Option<String>,
+    //#[serde(default)]
+    //pub redirect_stderr: Option<bool>,
+    #[serde(default)]
+    pub stdout_logfile: Option<String>,
+    #[serde(default)]
+    pub stdout_logfile_maxbytes: Option<String>,
+    #[serde(default)]
+    pub stdout_logfile_backups: Option<u32>,
+    #[serde(default)]
+    pub stderr_logfile: Option<String>,
+    #[serde(default)]
+    pub stderr_logfile_maxbytes: Option<String>,
+    #[serde(default)]
+    pub stderr_logfile_backups: Option<u32>,
+    #[serde(default)]
+    pub environment: Option<HashMap<String, String>>,
+}
+
+fn default_numprocs() -> u32 {
+    1
+}
+
+fn default_process_name() -> String {
+    String::from("%(program_name)s")
+}
 
 #[derive(Debug, Deserialize)]
 pub struct UnixHttpServer {
