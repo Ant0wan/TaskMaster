@@ -112,7 +112,7 @@ fn default_user() -> String {
 
 fn default_group() -> String {
     if let Some(username) = get_current_username() {
-        if let Some(group) = get_group_by_name(&username.to_string()) {
+        if let Some(group) = get_group_by_name(&username) {
             if let Some(groupname) = group.name().to_str() {
                 return groupname.to_owned();
             }
