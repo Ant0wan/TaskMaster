@@ -25,7 +25,7 @@ pub struct Config {
     include: Option<Include>,
     #[serde(default)]
     inet_http_server: Option<InetHttpServer>,
-}
+} // This has to have some combination of options true or false depending whether supervisord or supervosirctl read the config
 
 #[derive(Debug, Deserialize)]
 pub struct UnixHttpServer {
@@ -208,7 +208,7 @@ pub struct Include {
 #[derive(Debug, Deserialize)]
 pub struct InetHttpServer {
     #[serde(default)]
-    port: Option<String>,
+    port: String,
     #[serde(default)]
     username: Option<String>,
     #[serde(default)]
