@@ -53,11 +53,13 @@ pub struct Program {
     pub autorestart: Restart,
     #[serde(default = "default_exitcodes")]
     pub exitcodes: Vec<u32>,
-
     #[serde(default = "default_stopsignal")]
     pub stopsignal: StopSignal,
-    #[serde(default)]
-    pub stopwaitsecs: Option<u32>,
+    #[serde(default = "default_stopwaitsecs")]
+    pub stopwaitsecs: u32,
+    #[serde(default = "default_false")]
+    pub stopasgroup: bool,
+
     #[serde(default)]
     pub user: Option<String>,
     //#[serde(default)]
@@ -76,6 +78,10 @@ pub struct Program {
     pub stderr_logfile_backups: Option<u32>,
     #[serde(default)]
     pub environment: Option<HashMap<String, String>>,
+}
+
+fn default_stopwaitsecs() -> u32 {
+    10
 }
 
 #[derive(Deserialize, PartialEq, Debug)]
