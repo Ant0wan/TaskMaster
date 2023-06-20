@@ -1,13 +1,15 @@
-use serde::de::{self, Deserializer};
+use serde::de;
+use serde::de::Deserializer;
 use serde::Deserialize;
 use serde_ini;
 use serde_yaml::Value;
 use std::env;
 use std::fs::File;
 use std::io::Read;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::exit;
 use users::get_current_username;
+use users::get_group_by_name;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -109,12 +111,15 @@ fn default_user() -> String {
 }
 
 fn default_group() -> String {
-    if let Ok(groupname) = env::var("GROUP") {
-        groupname
-    } else {
-        eprintln!("Could not find which user to use");
-        exit(2)
+    if let Some(username) = get_current_username() {
+        if let Some(group) = get_group_by_name(&username.to_string()) {
+            if let Some(groupname) = group.name().to_str() {
+                return groupname.to_owned();
+            }
+        }
     }
+    eprintln!("Could not find which group to use");
+    exit(2);
 }
 
 fn default_childlogdir() -> String {
