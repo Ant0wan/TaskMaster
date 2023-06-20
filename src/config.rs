@@ -72,21 +72,46 @@ pub struct Program {
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub redirect_stderr: bool,
-    //
-    //#[serde(default)]
-    //pub stdout_logfile: Option<String>,
+    //#[serde(default = "default_stdout_logfile")]
+    //pub stdout_logfile: Logfile, // Fucked up
+    #[serde(default = "default_logfile_maxbytes")]
+    pub stdout_logfile_maxbytes: String,
     //    #[serde(default)]
-    //    pub stdout_logfile_maxbytes: Option<String>,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_logfile_backups")]
+    pub stdout_logfile_backups: u32,
+    #[serde(default = "default_stdout_capture_maxbytes")]
+    pub stdout_capture_maxbytes: String,
+    #[serde(default = "default_false")]
+    #[serde(deserialize_with = "deserialize_bool")]
+    pub stdout_events_enabled: bool,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub stdout_syslog: bool,
     //    #[serde(default)]
-    //    pub stdout_logfile_backups: Option<u32>,
-    //    #[serde(default)]
-    //    pub stderr_logfile: Option<String>,
+
+    //pub stderr_logfile: Option<String>,
     //    #[serde(default)]
     //    pub stderr_logfile_maxbytes: Option<String>,
     //    #[serde(default)]
     //    pub stderr_logfile_backups: Option<u32>,
     //    #[serde(default)]
     //    pub environment: Option<HashMap<String, String>>,
+}
+
+fn default_stdout_capture_maxbytes() -> String {
+    String::from("0MB")
+}
+
+#[derive(Deserialize, PartialEq, Debug)]
+pub enum Logfile {
+    AUTO, // will automatically choose a file location, log files and their backups will be deleted when supervisord restarts
+    NONE, // will create no log file
+    Custom(String),
+}
+
+fn default_stdout_logfile() -> Logfile {
+    Logfile::AUTO
 }
 
 fn deserialize_vec_u32<'de, D>(deserializer: D) -> Result<Vec<u32>, D::Error>
