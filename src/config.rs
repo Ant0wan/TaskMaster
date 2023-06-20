@@ -214,7 +214,7 @@ fn default_serverurl() -> String {
 #[derive(Debug, Deserialize)]
 pub struct Include {
     #[serde(default)]
-    files: Option<String>,
+    files: String,
 }
 
 #[derive(Debug, Deserialize)]
