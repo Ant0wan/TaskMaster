@@ -76,7 +76,6 @@ pub struct Program {
     //pub stdout_logfile: Logfile, // Fucked up
     #[serde(default = "default_logfile_maxbytes")]
     pub stdout_logfile_maxbytes: String,
-    //    #[serde(default)]
     #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_logfile_backups")]
     pub stdout_logfile_backups: u32,
@@ -88,15 +87,57 @@ pub struct Program {
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub stdout_syslog: bool,
+    //   pub stderr_logfile: Logfile,
+    #[serde(default = "default_stderr_logfile_maxbytes")]
+    pub stderr_logfile_maxbytes: String,
     //    #[serde(default)]
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_stderr_logfile_backups")]
+    pub stderr_logfile_backups: u32,
+    #[serde(default = "default_stderr_capture_maxbytes")]
+    pub stderr_capture_maxbytes: String,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub stderr_events_enabled: bool,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub stderr_syslog: bool,
+    //    #[serde(default)]
+    //pub environment: Option<HashMap<String, String>>,
+    #[serde(default = "default_current_working_dir")]
+    pub directory: String,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_current_umask")]
+    pub umask: u32,
+}
 
-    //pub stderr_logfile: Option<String>,
-    //    #[serde(default)]
-    //    pub stderr_logfile_maxbytes: Option<String>,
-    //    #[serde(default)]
-    //    pub stderr_logfile_backups: Option<u32>,
-    //    #[serde(default)]
-    //    pub environment: Option<HashMap<String, String>>,
+#[cfg(target_family = "unix")]
+fn default_current_umask() -> u32 {
+    use nix::sys::stat::umask;
+
+    let current_umask = umask(nix::sys::stat::Mode::empty());
+    umask(current_umask);
+
+    !current_umask.bits() & 0o777
+}
+
+fn default_current_working_dir() -> String {
+    match env::current_dir() {
+        Ok(path) => path.to_string_lossy().into_owned(),
+        Err(err) => panic!("Failed to get current working directory: {}", err),
+    }
+}
+
+fn default_stderr_capture_maxbytes() -> String {
+    String::from("0MB")
+}
+
+fn default_stderr_logfile_backups() -> u32 {
+    10
+}
+
+fn default_stderr_logfile_maxbytes() -> String {
+    String::from("50MB")
 }
 
 fn default_stdout_capture_maxbytes() -> String {

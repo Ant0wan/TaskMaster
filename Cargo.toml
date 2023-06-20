@@ -8,6 +8,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9.21"
 serde_ini = "0.2.0"
 users = "0.11.0"
+nix = "0.26.2"
 
 [[bin]]
 name = "taskmasterctl"
