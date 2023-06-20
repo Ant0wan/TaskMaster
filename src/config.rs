@@ -460,7 +460,7 @@ where
 
     // Try to convert the value to a u32
     if let Some(n) = value.as_u64() {
-        if let Some(u32_val) = n.try_into().ok() {
+        if let Ok(u32_val) = n.try_into() {
             Ok(u32_val)
         } else {
             Err(de::Error::custom("Value exceeds the range of u32"))
