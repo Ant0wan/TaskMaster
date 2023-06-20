@@ -1,5 +1,6 @@
 use serde::de;
 use serde::de::Deserializer;
+use serde::de::SeqAccess;
 use serde::de::Visitor;
 use serde::Deserialize;
 use serde_ini;
@@ -93,7 +94,6 @@ pub struct Program {
     //    #[serde(default)]
     //    pub environment: Option<HashMap<String, String>>,
 }
-
 fn deserialize_vec_u32<'de, D>(deserializer: D) -> Result<Vec<u32>, D::Error>
 where
     D: Deserializer<'de>,
@@ -104,7 +104,17 @@ where
         type Value = Vec<u32>;
 
         fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-            formatter.write_str("a comma-separated list of u32 values")
+            formatter.write_str("a sequence or comma-separated list of u32 values")
+        }
+
+        fn visit_seq<A: SeqAccess<'de>>(self, mut seq: A) -> Result<Self::Value, A::Error> {
+            let mut values = Vec::new();
+
+            while let Some(value) = seq.next_element::<u32>()? {
+                values.push(value);
+            }
+
+            Ok(values)
         }
 
         fn visit_str<E: de::Error>(self, value: &str) -> Result<Self::Value, E> {
@@ -119,7 +129,7 @@ where
         }
     }
 
-    deserializer.deserialize_str(VecU32Visitor)
+    deserializer.deserialize_any(VecU32Visitor)
 }
 
 fn default_stopwaitsecs() -> u32 {

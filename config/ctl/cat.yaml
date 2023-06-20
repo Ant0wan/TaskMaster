@@ -9,7 +9,10 @@ program:cat:
   autorestart: "unexpected"
   startsecs: "10"
   startretries: "3"
-  exitcodes: "0,1,3"
+  exitcodes:
+    - 0
+    - 1
+    - 3
   stopsignal: "TERM"
   stopwaitsecs: "10"
   stopasgroup: "false"
