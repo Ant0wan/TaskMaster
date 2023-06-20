@@ -43,32 +43,32 @@ pub struct Program {
     //pub numprocs_start: u32,
     //#[serde(default = "default_priority")]
     //pub priority: u32,
-    //#[serde(default = "default_true")]
-    //#[serde(deserialize_with = "deserialize_bool")]
-    //pub autostart: bool,
+    #[serde(default = "default_true")]
+    #[serde(deserialize_with = "deserialize_bool")]
+    pub autostart: bool,
     //#[serde(default = "default_startsecs")]
     //pub startsecs: u32,
     //#[serde(default = "default_startretries")]
     //pub startretries: u32,
-    //    #[serde(default = "default_autorestart")]
-    //    pub autorestart: Restart,
-    //    #[serde(default = "default_exitcodes")]
-    //    pub exitcodes: Vec<u32>,
-    //    #[serde(default = "default_stopsignal")]
-    //    pub stopsignal: StopSignal,
+    #[serde(default = "default_autorestart")]
+    pub autorestart: Restart,
+    //#[serde(default = "default_exitcodes")]
+    //pub exitcodes: Vec<u32>,
+    #[serde(default = "default_stopsignal")]
+    pub stopsignal: StopSignal,
     //    #[serde(default = "default_stopwaitsecs")]
     //    pub stopwaitsecs: u32,
-    //    #[serde(default = "default_false")]
-    //    pub stopasgroup: bool,
-    //    #[serde(default = "default_false")]
-    //    pub killasgroup: bool,
-    //    #[serde(default = "default_user")]
-    //    pub user: String,
-    //    #[serde(default = "default_false")]
-    //    pub redirect_stderr: bool,
+    //#[serde(default = "default_false")]
+    //pub stopasgroup: bool,
+    //#[serde(default = "default_false")]
+    //pub killasgroup: bool,
+    #[serde(default = "default_user")]
+    pub user: String,
+    //#[serde(default = "default_false")]
+    //pub redirect_stderr: bool,
     //
-    //    #[serde(default)]
-    //    pub stdout_logfile: Option<String>,
+    //#[serde(default)]
+    //pub stdout_logfile: Option<String>,
     //    #[serde(default)]
     //    pub stdout_logfile_maxbytes: Option<String>,
     //    #[serde(default)]
@@ -98,7 +98,6 @@ pub enum Restart {
 }
 
 #[derive(Deserialize, PartialEq, Debug)]
-#[serde(rename_all = "lowercase")]
 pub enum StopSignal {
     TERM,
     HUP,
