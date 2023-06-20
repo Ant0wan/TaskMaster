@@ -15,8 +15,8 @@ use users::get_group_by_name;
 pub struct Config {
     #[serde(default)]
     unix_http_server: Option<UnixHttpServer>,
-    #[serde(default = "default_supervisord")]
-    supervisord: Supervisord,
+    #[serde(default)]
+    supervisord: Option<Supervisord>,
     #[serde(rename = "rpcinterface:supervisor", default)]
     rpcinterface_supervisor: Option<RpcInterfaceSupervisor>,
     #[serde(default)]
@@ -273,7 +273,7 @@ fn remove_inline_comments(contents: &str) -> String {
         .join("\n")
 }
 
-fn default_supervisord() -> Supervisord {
-    println!("Error: .ini file does not include taskmasterd section\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ? could be different path could be .ini but also json or yaml
-    exit(1)
-}
+//fn default_supervisord() -> Supervisord {
+//    println!("Error: .ini file does not include taskmasterd section\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ? could be different path could be .ini but also json or yaml
+//    exit(1)
+//}
