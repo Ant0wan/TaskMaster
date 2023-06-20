@@ -157,6 +157,7 @@ fn default_process_name() -> String {
 pub struct UnixHttpServer {
     #[serde(default)]
     pub file: Option<String>,
+    #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_chmod")]
     pub chmod: u32,
     #[serde(default = "default_chown")]
@@ -177,12 +178,14 @@ pub struct Supervisord {
     pub logfile: String,
     #[serde(default = "default_logfile_maxbytes")]
     pub logfile_maxbytes: String,
+    #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_logfile_backups")]
     pub logfile_backups: u32,
     #[serde(default = "default_loglevel")]
     pub loglevel: String,
     #[serde(default = "default_pidfile")]
     pub pidfile: String,
+    #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_umask")]
     pub umask: u32,
     #[serde(deserialize_with = "deserialize_bool")]
@@ -191,8 +194,10 @@ pub struct Supervisord {
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub silent: bool,
+    #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_minfds")]
     pub minfds: u32,
+    #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_minprocs")]
     pub minprocs: u32,
     #[serde(deserialize_with = "deserialize_bool")]
