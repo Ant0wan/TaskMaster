@@ -72,8 +72,8 @@ pub struct Program {
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub redirect_stderr: bool,
-    //#[serde(default = "default_stdout_logfile")]
-    //pub stdout_logfile: Logfile, // Fucked up
+    #[serde(default = "default_stdout_logfile")]
+    pub stdout_logfile: Logfile,
     #[serde(default = "default_logfile_maxbytes")]
     pub stdout_logfile_maxbytes: String,
     #[serde(deserialize_with = "deserialize_u32")]
@@ -87,10 +87,10 @@ pub struct Program {
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub stdout_syslog: bool,
-    //   pub stderr_logfile: Logfile,
+    #[serde(default = "default_stdout_logfile")]
+    pub stderr_logfile: Logfile,
     #[serde(default = "default_stderr_logfile_maxbytes")]
     pub stderr_logfile_maxbytes: String,
-    //    #[serde(default)]
     #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_stderr_logfile_backups")]
     pub stderr_logfile_backups: u32,
@@ -109,6 +109,32 @@ pub struct Program {
     #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_current_umask")]
     pub umask: u32,
+    #[serde(default = "default_programserverurl")]
+    pub serverurl: Serverurl,
+}
+
+#[derive(PartialEq, Debug)]
+pub enum Serverurl {
+    AUTO,
+    Custom(String),
+}
+
+impl<'de> Deserialize<'de> for Serverurl {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let value: String = Deserialize::deserialize(deserializer)?;
+
+        match value.as_str() {
+            "AUTO" => Ok(Serverurl::AUTO),
+            _ => Ok(Serverurl::Custom(value)),
+        }
+    }
+}
+
+fn default_programserverurl() -> Serverurl {
+    Serverurl::AUTO
 }
 
 #[cfg(target_family = "unix")]
@@ -144,11 +170,26 @@ fn default_stdout_capture_maxbytes() -> String {
     String::from("0MB")
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(PartialEq, Debug)]
 pub enum Logfile {
     AUTO, // will automatically choose a file location, log files and their backups will be deleted when supervisord restarts
     NONE, // will create no log file
     Custom(String),
+}
+
+impl<'de> Deserialize<'de> for Logfile {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let value: String = Deserialize::deserialize(deserializer)?;
+
+        match value.as_str() {
+            "AUTO" => Ok(Logfile::AUTO),
+            "NONE" => Ok(Logfile::NONE),
+            _ => Ok(Logfile::Custom(value)),
+        }
+    }
 }
 
 fn default_stdout_logfile() -> Logfile {
