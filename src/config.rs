@@ -27,7 +27,8 @@ pub struct Config {
     #[serde(default)]
     inet_http_server: Option<InetHttpServer>,
     #[serde(flatten)]
-    program: Option<HashMap<String, Program>>,
+    //program: Option<HashMap<String, Program>>,
+    program: HashMap<String, Program>,
 } // This has to have some combination of options true or false depending whether supervisord or supervosirctl read the config
 
 #[derive(Debug, Deserialize)]
@@ -36,50 +37,50 @@ pub struct Program {
     pub command: String,
     #[serde(default = "default_process_name")]
     pub process_name: String,
-    #[serde(default = "default_numprocs")]
-    pub numprocs: u32,
-    #[serde(default = "default_numprocs_start")]
-    pub numprocs_start: u32,
-    #[serde(default = "default_priority")]
-    pub priority: u32,
-    #[serde(default = "default_true")]
-    #[serde(deserialize_with = "deserialize_bool")]
-    pub autostart: bool,
-    #[serde(default = "default_startsecs")]
-    pub startsecs: u32,
-    #[serde(default = "default_startretries")]
-    pub startretries: u32,
-    #[serde(default = "default_autorestart")]
-    pub autorestart: Restart,
-    #[serde(default = "default_exitcodes")]
-    pub exitcodes: Vec<u32>,
-    #[serde(default = "default_stopsignal")]
-    pub stopsignal: StopSignal,
-    #[serde(default = "default_stopwaitsecs")]
-    pub stopwaitsecs: u32,
-    #[serde(default = "default_false")]
-    pub stopasgroup: bool,
-    #[serde(default = "default_false")]
-    pub killasgroup: bool,
-    #[serde(default = "default_user")]
-    pub user: String,
-
-    //#[serde(default)]
-    //pub redirect_stderr: Option<bool>,
-    #[serde(default)]
-    pub stdout_logfile: Option<String>,
-    #[serde(default)]
-    pub stdout_logfile_maxbytes: Option<String>,
-    #[serde(default)]
-    pub stdout_logfile_backups: Option<u32>,
-    #[serde(default)]
-    pub stderr_logfile: Option<String>,
-    #[serde(default)]
-    pub stderr_logfile_maxbytes: Option<String>,
-    #[serde(default)]
-    pub stderr_logfile_backups: Option<u32>,
-    #[serde(default)]
-    pub environment: Option<HashMap<String, String>>,
+    //#[serde(default = "default_numprocs")]
+    //pub numprocs: u32,
+    //#[serde(default = "default_numprocs_start")]
+    //pub numprocs_start: u32,
+    //#[serde(default = "default_priority")]
+    //pub priority: u32,
+    //#[serde(default = "default_true")]
+    //#[serde(deserialize_with = "deserialize_bool")]
+    //pub autostart: bool,
+    //#[serde(default = "default_startsecs")]
+    //pub startsecs: u32,
+    //#[serde(default = "default_startretries")]
+    //pub startretries: u32,
+    //    #[serde(default = "default_autorestart")]
+    //    pub autorestart: Restart,
+    //    #[serde(default = "default_exitcodes")]
+    //    pub exitcodes: Vec<u32>,
+    //    #[serde(default = "default_stopsignal")]
+    //    pub stopsignal: StopSignal,
+    //    #[serde(default = "default_stopwaitsecs")]
+    //    pub stopwaitsecs: u32,
+    //    #[serde(default = "default_false")]
+    //    pub stopasgroup: bool,
+    //    #[serde(default = "default_false")]
+    //    pub killasgroup: bool,
+    //    #[serde(default = "default_user")]
+    //    pub user: String,
+    //    #[serde(default = "default_false")]
+    //    pub redirect_stderr: bool,
+    //
+    //    #[serde(default)]
+    //    pub stdout_logfile: Option<String>,
+    //    #[serde(default)]
+    //    pub stdout_logfile_maxbytes: Option<String>,
+    //    #[serde(default)]
+    //    pub stdout_logfile_backups: Option<u32>,
+    //    #[serde(default)]
+    //    pub stderr_logfile: Option<String>,
+    //    #[serde(default)]
+    //    pub stderr_logfile_maxbytes: Option<String>,
+    //    #[serde(default)]
+    //    pub stderr_logfile_backups: Option<u32>,
+    //    #[serde(default)]
+    //    pub environment: Option<HashMap<String, String>>,
 }
 
 fn default_stopwaitsecs() -> u32 {
