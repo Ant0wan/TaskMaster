@@ -16,17 +16,12 @@ use users::get_group_by_name;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    #[serde(default)]
     unix_http_server: Option<UnixHttpServer>,
-    #[serde(default)]
     supervisord: Option<Supervisord>,
     #[serde(rename = "rpcinterface:supervisor", default)]
     rpcinterface_supervisor: Option<RpcInterfaceSupervisor>,
-    #[serde(default)]
     supervisorctl: Option<SupervisorCtl>,
-    #[serde(default)]
     include: Option<Include>,
-    #[serde(default)]
     inet_http_server: Option<InetHttpServer>,
     #[serde(flatten)]
     //program: Option<HashMap<String, Program>>,
@@ -35,7 +30,6 @@ pub struct Config {
 
 #[derive(Debug, Deserialize)]
 pub struct Program {
-    #[serde(default)]
     pub command: String,
     #[serde(default = "default_process_name")]
     pub process_name: String,
@@ -187,7 +181,6 @@ fn default_process_name() -> String {
 
 #[derive(Debug, Deserialize)]
 pub struct UnixHttpServer {
-    #[serde(default)]
     pub file: Option<String>,
     #[serde(deserialize_with = "deserialize_u32")]
     #[serde(default = "default_chmod")]
@@ -196,7 +189,6 @@ pub struct UnixHttpServer {
     pub chown: String,
     #[serde(default = "default_user")]
     pub username: String,
-    #[serde(default)]
     pub password: Option<String>,
 }
 
@@ -244,7 +236,6 @@ pub struct Supervisord {
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub strip_ansi: bool,
-    #[serde(default)]
     pub environment: Option<String>,
     #[serde(default = "default_identifier")]
     pub identifier: String,
@@ -389,13 +380,10 @@ pub struct RpcInterfaceSupervisor {
 pub struct SupervisorCtl {
     #[serde(default = "default_serverurl")]
     serverurl: String,
-    #[serde(default)]
     username: Option<String>,
-    #[serde(default)]
     password: Option<String>,
     #[serde(default = "default_identifier")]
     prompt: String,
-    #[serde(default)]
     history_file: Option<String>,
 }
 
@@ -405,7 +393,6 @@ fn default_serverurl() -> String {
 
 #[derive(Debug, Deserialize)]
 pub struct Include {
-    #[serde(default)]
     files: String,
 }
 
@@ -413,9 +400,7 @@ pub struct Include {
 pub struct InetHttpServer {
     #[serde(default = "default_port")]
     port: String,
-    #[serde(default)]
     username: Option<String>,
-    #[serde(default)]
     password: Option<String>,
 }
 
