@@ -52,8 +52,8 @@ pub struct Program {
     #[serde(default = "default_autorestart")]
     pub autorestart: Restart,
 
-    #[serde(default)]
-    pub exitcodes: Option<Vec<u32>>,
+    #[serde(default = "default_exitcodes")]
+    pub exitcodes: Vec<u32>,
     #[serde(default)]
     pub stopsignal: Option<u32>,
     #[serde(default)]
@@ -94,6 +94,10 @@ fn default_autorestart() -> Restart {
 
 fn default_priority() -> u32 {
     999
+}
+
+fn default_exitcodes() -> Vec<u32> {
+    vec![0]
 }
 
 fn default_numprocs_start() -> u32 {
