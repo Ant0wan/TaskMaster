@@ -195,8 +195,20 @@ pub struct RpcInterfaceSupervisor {
 
 #[derive(Debug, Deserialize)]
 pub struct SupervisorCtl {
+    #[serde(default = "default_serverurl")]
+    serverurl: String,
     #[serde(default)]
-    serverurl: Option<String>,
+    username: Option<String>,
+    #[serde(default)]
+    password: Option<String>,
+    #[serde(default = "default_identifier")]
+    prompt: String,
+    #[serde(default)]
+    history_file: Option<String>,
+}
+
+fn default_serverurl() -> String {
+    String::from("http://localhost:9001")
 }
 
 #[derive(Debug, Deserialize)]
@@ -207,12 +219,17 @@ pub struct Include {
 
 #[derive(Debug, Deserialize)]
 pub struct InetHttpServer {
-    #[serde(default)]
+    #[serde(default = "default_port")]
     port: String,
     #[serde(default)]
     username: Option<String>,
     #[serde(default)]
     password: Option<String>,
+}
+
+fn default_port() -> String {
+    println!("Error: .ini file, InetHttpServer section does not include a valid port value\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ? Check the supervisord error message. could be different path could be .ini but also json or yaml
+    exit(1)
 }
 
 pub fn parse_yq_file(filename: &str) -> Result<Config, Box<dyn std::error::Error>> {
