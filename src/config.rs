@@ -14,6 +14,40 @@ use std::process::exit;
 use users::get_current_username;
 use users::get_group_by_name;
 
+#[derive(Deserialize, PartialEq, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum Restart {
+    False,
+    Never,
+    Always,
+    True,
+    Unexpected,
+}
+
+#[derive(Deserialize, PartialEq, Debug)]
+pub enum StopSignal {
+    TERM,
+    HUP,
+    INT,
+    QUIT,
+    KILL,
+    USR1,
+    USR2,
+}
+
+#[derive(PartialEq, Debug)]
+pub enum Logfile {
+    AUTO, // will automatically choose a file location, log files and their backups will be deleted when supervisord restarts
+    NONE, // will create no log file
+    Custom(String),
+}
+
+#[derive(PartialEq, Debug)]
+pub enum Serverurl {
+    AUTO,
+    Custom(String),
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Config {
     unix_http_server: Option<UnixHttpServer>,
@@ -101,6 +135,7 @@ pub struct Program {
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub stderr_syslog: bool,
+    #[serde(default)]
     #[serde(deserialize_with = "deserialize_env")]
     pub environment: Option<HashMap<String, String>>,
     #[serde(default = "default_current_working_dir")]
@@ -110,6 +145,141 @@ pub struct Program {
     pub umask: u32,
     #[serde(default = "default_programserverurl")]
     pub serverurl: Serverurl,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct UnixHttpServer {
+    pub file: Option<String>,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_chmod")]
+    pub chmod: u32,
+    #[serde(default = "default_chown")]
+    pub chown: String,
+    #[serde(default = "default_user")]
+    pub username: String,
+    pub password: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Supervisord {
+    #[serde(default = "default_logfile")]
+    pub logfile: String,
+    #[serde(default = "default_logfile_maxbytes")]
+    pub logfile_maxbytes: String,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_logfile_backups")]
+    pub logfile_backups: u32,
+    #[serde(default = "default_loglevel")]
+    pub loglevel: String,
+    #[serde(default = "default_pidfile")]
+    pub pidfile: String,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_umask")]
+    pub umask: u32,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub nodaemon: bool,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub silent: bool,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_minfds")]
+    pub minfds: u32,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_minprocs")]
+    pub minprocs: u32,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub nocleanup: bool,
+    #[serde(default = "default_childlogdir")]
+    pub childlogdir: String,
+    #[serde(default = "default_user")]
+    pub user: String,
+    #[serde(default = "default_directory")]
+    pub directory: String,
+    #[serde(deserialize_with = "deserialize_bool")]
+    #[serde(default = "default_false")]
+    pub strip_ansi: bool,
+    #[serde(default)]
+    #[serde(deserialize_with = "deserialize_env")]
+    pub environment: Option<HashMap<String, String>>,
+    #[serde(default = "default_identifier")]
+    pub identifier: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RpcInterfaceSupervisor {
+    #[serde(rename = "supervisor.rpcinterface_factory")]
+    #[serde(default)]
+    supervisor_rpcinterface_factory: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SupervisorCtl {
+    #[serde(default = "default_serverurl")]
+    serverurl: String,
+    username: Option<String>,
+    password: Option<String>,
+    #[serde(default = "default_identifier")]
+    prompt: String,
+    history_file: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Include {
+    files: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct InetHttpServer {
+    #[serde(default = "default_port")]
+    port: String,
+    username: Option<String>,
+    password: Option<String>,
+}
+
+fn deserialize_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Deserialize the value as a dynamic type
+    let value: Value = Deserialize::deserialize(deserializer)?;
+
+    // Try to convert the value to a boolean
+    if let Some(s) = value.as_str() {
+        match s {
+            "true" => Ok(true),
+            "false" => Ok(false),
+            _ => Err(de::Error::custom("Invalid value for a boolean field")),
+        }
+    } else {
+        Ok(false)
+    }
+}
+
+fn deserialize_u32<'de, D>(deserializer: D) -> Result<u32, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Deserialize the value as a dynamic type
+    let value: serde_yaml::Value = Deserialize::deserialize(deserializer)?;
+
+    // Try to convert the value to a u32
+    if let Some(n) = value.as_u64() {
+        if let Ok(u32_val) = n.try_into() {
+            Ok(u32_val)
+        } else {
+            Err(de::Error::custom("Value exceeds the range of u32"))
+        }
+    } else if let Some(s) = value.as_str() {
+        if let Ok(parsed) = s.parse::<u32>() {
+            Ok(parsed)
+        } else {
+            Err(de::Error::custom("Invalid value for a u32 field"))
+        }
+    } else {
+        Err(de::Error::custom("Invalid value type for a u32 field"))
+    }
 }
 
 fn deserialize_env<'de, D>(deserializer: D) -> Result<Option<HashMap<String, String>>, D::Error>
@@ -164,10 +334,48 @@ where
     Ok(EnvWrapper::deserialize(deserializer)?.0)
 }
 
-#[derive(PartialEq, Debug)]
-pub enum Serverurl {
-    AUTO,
-    Custom(String),
+impl<'de> Deserialize<'de> for Logfile {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let value: String = Deserialize::deserialize(deserializer)?;
+
+        match value.as_str() {
+            "AUTO" => Ok(Logfile::AUTO),
+            "NONE" => Ok(Logfile::NONE),
+            _ => Ok(Logfile::Custom(value)),
+        }
+    }
+}
+
+fn deserialize_vec_u32<'de, D>(deserializer: D) -> Result<Vec<u32>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct VecU32Visitor;
+
+    impl<'de> Visitor<'de> for VecU32Visitor {
+        type Value = Vec<u32>;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("a sequence or comma-separated list of u32 values")
+        }
+
+        fn visit_seq<A: SeqAccess<'de>>(self, seq: A) -> Result<Self::Value, A::Error> {
+            Deserialize::deserialize(de::value::SeqAccessDeserializer::new(seq))
+        }
+
+        fn visit_str<E: de::Error>(self, value: &str) -> Result<Self::Value, E> {
+            value
+                .split(',')
+                .map(str::trim)
+                .map(|s| s.parse().map_err(de::Error::custom))
+                .collect()
+        }
+    }
+
+    deserializer.deserialize_any(VecU32Visitor)
 }
 
 impl<'de> Deserialize<'de> for Serverurl {
@@ -221,84 +429,12 @@ fn default_stdout_capture_maxbytes() -> String {
     String::from("0MB")
 }
 
-#[derive(PartialEq, Debug)]
-pub enum Logfile {
-    AUTO, // will automatically choose a file location, log files and their backups will be deleted when supervisord restarts
-    NONE, // will create no log file
-    Custom(String),
-}
-
-impl<'de> Deserialize<'de> for Logfile {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let value: String = Deserialize::deserialize(deserializer)?;
-
-        match value.as_str() {
-            "AUTO" => Ok(Logfile::AUTO),
-            "NONE" => Ok(Logfile::NONE),
-            _ => Ok(Logfile::Custom(value)),
-        }
-    }
-}
-
 fn default_stdout_logfile() -> Logfile {
     Logfile::AUTO
 }
 
-fn deserialize_vec_u32<'de, D>(deserializer: D) -> Result<Vec<u32>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    struct VecU32Visitor;
-
-    impl<'de> Visitor<'de> for VecU32Visitor {
-        type Value = Vec<u32>;
-
-        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-            formatter.write_str("a sequence or comma-separated list of u32 values")
-        }
-
-        fn visit_seq<A: SeqAccess<'de>>(self, seq: A) -> Result<Self::Value, A::Error> {
-            Deserialize::deserialize(de::value::SeqAccessDeserializer::new(seq))
-        }
-
-        fn visit_str<E: de::Error>(self, value: &str) -> Result<Self::Value, E> {
-            value
-                .split(',')
-                .map(str::trim)
-                .map(|s| s.parse().map_err(de::Error::custom))
-                .collect()
-        }
-    }
-
-    deserializer.deserialize_any(VecU32Visitor)
-}
-
 fn default_stopwaitsecs() -> u32 {
     10
-}
-
-#[derive(Deserialize, PartialEq, Debug)]
-#[serde(rename_all = "lowercase")]
-pub enum Restart {
-    False,
-    Never,
-    Always,
-    True,
-    Unexpected,
-}
-
-#[derive(Deserialize, PartialEq, Debug)]
-pub enum StopSignal {
-    TERM,
-    HUP,
-    INT,
-    QUIT,
-    KILL,
-    USR1,
-    USR2,
 }
 
 fn default_autorestart() -> Restart {
@@ -337,66 +473,17 @@ fn default_process_name() -> String {
     String::from("%(program_name)s")
 }
 
-#[derive(Debug, Deserialize)]
-pub struct UnixHttpServer {
-    pub file: Option<String>,
-    #[serde(deserialize_with = "deserialize_u32")]
-    #[serde(default = "default_chmod")]
-    pub chmod: u32,
-    #[serde(default = "default_chown")]
-    pub chown: String,
-    #[serde(default = "default_user")]
-    pub username: String,
-    pub password: Option<String>,
-}
-
 fn default_chmod() -> u32 {
     0o700
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Supervisord {
-    #[serde(default = "default_logfile")]
-    pub logfile: String,
-    #[serde(default = "default_logfile_maxbytes")]
-    pub logfile_maxbytes: String,
-    #[serde(deserialize_with = "deserialize_u32")]
-    #[serde(default = "default_logfile_backups")]
-    pub logfile_backups: u32,
-    #[serde(default = "default_loglevel")]
-    pub loglevel: String,
-    #[serde(default = "default_pidfile")]
-    pub pidfile: String,
-    #[serde(deserialize_with = "deserialize_u32")]
-    #[serde(default = "default_umask")]
-    pub umask: u32,
-    #[serde(deserialize_with = "deserialize_bool")]
-    #[serde(default = "default_false")]
-    pub nodaemon: bool,
-    #[serde(deserialize_with = "deserialize_bool")]
-    #[serde(default = "default_false")]
-    pub silent: bool,
-    #[serde(deserialize_with = "deserialize_u32")]
-    #[serde(default = "default_minfds")]
-    pub minfds: u32,
-    #[serde(deserialize_with = "deserialize_u32")]
-    #[serde(default = "default_minprocs")]
-    pub minprocs: u32,
-    #[serde(deserialize_with = "deserialize_bool")]
-    #[serde(default = "default_false")]
-    pub nocleanup: bool,
-    #[serde(default = "default_childlogdir")]
-    pub childlogdir: String,
-    #[serde(default = "default_user")]
-    pub user: String,
-    #[serde(default = "default_directory")]
-    pub directory: String,
-    #[serde(deserialize_with = "deserialize_bool")]
-    #[serde(default = "default_false")]
-    pub strip_ansi: bool,
-    pub environment: Option<String>,
-    #[serde(default = "default_identifier")]
-    pub identifier: String,
+fn default_serverurl() -> String {
+    String::from("http://localhost:9001")
+}
+
+fn default_port() -> String {
+    println!("Error: .ini file, InetHttpServer section does not include a valid port value\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ? Check the supervisord error message. could be different path could be .ini but also json or yaml
+    exit(1)
 }
 
 fn default_directory() -> String {
@@ -483,88 +570,18 @@ fn default_identifier() -> String {
     String::from("supervisor")
 }
 
-fn deserialize_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    // Deserialize the value as a dynamic type
-    let value: Value = Deserialize::deserialize(deserializer)?;
-
-    // Try to convert the value to a boolean
-    if let Some(s) = value.as_str() {
-        match s {
-            "true" => Ok(true),
-            "false" => Ok(false),
-            _ => Err(de::Error::custom("Invalid value for a boolean field")),
-        }
-    } else {
-        Ok(false)
-    }
-}
-
-fn deserialize_u32<'de, D>(deserializer: D) -> Result<u32, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    // Deserialize the value as a dynamic type
-    let value: serde_yaml::Value = Deserialize::deserialize(deserializer)?;
-
-    // Try to convert the value to a u32
-    if let Some(n) = value.as_u64() {
-        if let Ok(u32_val) = n.try_into() {
-            Ok(u32_val)
-        } else {
-            Err(de::Error::custom("Value exceeds the range of u32"))
-        }
-    } else if let Some(s) = value.as_str() {
-        if let Ok(parsed) = s.parse::<u32>() {
-            Ok(parsed)
-        } else {
-            Err(de::Error::custom("Invalid value for a u32 field"))
-        }
-    } else {
-        Err(de::Error::custom("Invalid value type for a u32 field"))
-    }
-}
-
-#[derive(Debug, Deserialize)]
-pub struct RpcInterfaceSupervisor {
-    #[serde(rename = "supervisor.rpcinterface_factory")]
-    #[serde(default)]
-    supervisor_rpcinterface_factory: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct SupervisorCtl {
-    #[serde(default = "default_serverurl")]
-    serverurl: String,
-    username: Option<String>,
-    password: Option<String>,
-    #[serde(default = "default_identifier")]
-    prompt: String,
-    history_file: Option<String>,
-}
-
-fn default_serverurl() -> String {
-    String::from("http://localhost:9001")
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Include {
-    files: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct InetHttpServer {
-    #[serde(default = "default_port")]
-    port: String,
-    username: Option<String>,
-    password: Option<String>,
-}
-
-fn default_port() -> String {
-    println!("Error: .ini file, InetHttpServer section does not include a valid port value\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ? Check the supervisord error message. could be different path could be .ini but also json or yaml
-    exit(1)
+fn remove_inline_comments(contents: &str) -> String {
+    contents
+        .lines()
+        .map(|line| {
+            if let Some(position) = line.find(';') {
+                &line[..position]
+            } else {
+                line
+            }
+        })
+        .collect::<Vec<&str>>()
+        .join("\n")
 }
 
 pub fn parse_yq_file(filename: &str) -> Result<Config, Box<dyn std::error::Error>> {
@@ -593,22 +610,4 @@ pub fn parse_ini_file(filename: &str) -> Result<Config, Box<dyn std::error::Erro
 
     Ok(config)
 }
-
-fn remove_inline_comments(contents: &str) -> String {
-    contents
-        .lines()
-        .map(|line| {
-            if let Some(position) = line.find(';') {
-                &line[..position]
-            } else {
-                line
-            }
-        })
-        .collect::<Vec<&str>>()
-        .join("\n")
-}
-
-//fn default_supervisord() -> Supervisord {
 //    println!("Error: .ini file does not include taskmasterd section\nFor help, use /usr/bin/taskmasterd -h"); // Should be dynamic ? could be different path could be .ini but also json or yaml
-//    exit(1)
-//}
