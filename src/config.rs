@@ -36,12 +36,14 @@ pub struct Program {
     pub command: String,
     #[serde(default = "default_process_name")]
     pub process_name: String,
+    #[serde(default = "default_priority")]
+    pub priority: u32,
     #[serde(default = "default_numprocs")]
     pub numprocs: u32,
-    #[serde(default)]
-    pub numprocs_start: Option<u32>,
-    // #[serde(default)]
-    // pub autostart: Option<bool>,
+    #[serde(default = "default_numprocs_start")]
+    pub numprocs_start: u32,
+    #[serde(default = "default_true")]
+    pub autostart: bool,
     #[serde(default)]
     pub autorestart: Option<String>,
     #[serde(default)]
@@ -72,6 +74,14 @@ pub struct Program {
     pub stderr_logfile_backups: Option<u32>,
     #[serde(default)]
     pub environment: Option<HashMap<String, String>>,
+}
+
+fn default_priority() -> u32 {
+    999
+}
+
+fn default_numprocs_start() -> u32 {
+    0
 }
 
 fn default_numprocs() -> u32 {
@@ -212,6 +222,10 @@ fn default_minfds() -> u32 {
 
 fn default_minprocs() -> u32 {
     200
+}
+
+fn default_true() -> bool {
+    true
 }
 
 fn default_false() -> bool {
