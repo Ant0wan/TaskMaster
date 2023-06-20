@@ -51,11 +51,11 @@ pub struct Program {
     pub startretries: u32,
     #[serde(default = "default_autorestart")]
     pub autorestart: Restart,
-
     #[serde(default = "default_exitcodes")]
     pub exitcodes: Vec<u32>,
-    #[serde(default)]
-    pub stopsignal: Option<u32>,
+
+    #[serde(default = "default_stopsignal")]
+    pub stopsignal: StopSignal,
     #[serde(default)]
     pub stopwaitsecs: Option<u32>,
     #[serde(default)]
@@ -88,8 +88,24 @@ pub enum Restart {
     Unexpected,
 }
 
+#[derive(Deserialize, PartialEq, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum StopSignal {
+    TERM,
+    HUP,
+    INT,
+    QUIT,
+    KILL,
+    USR1,
+    USR2,
+}
+
 fn default_autorestart() -> Restart {
     Restart::Unexpected
+}
+
+fn default_stopsignal() -> StopSignal {
+    StopSignal::TERM
 }
 
 fn default_priority() -> u32 {
