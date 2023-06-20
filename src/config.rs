@@ -57,8 +57,9 @@ pub struct Program {
     pub startretries: u32,
     #[serde(default = "default_autorestart")]
     pub autorestart: Restart,
-    //    #[serde(default = "default_exitcodes")]
-    //    pub exitcodes: Vec<u32>,
+    #[serde(default = "default_exitcodes")]
+    #[serde(deserialize_with = "deserialize_vec_u32")]
+    pub exitcodes: Vec<u32>,
     #[serde(default = "default_stopsignal")]
     pub stopsignal: StopSignal,
     #[serde(deserialize_with = "deserialize_u32")]
@@ -343,6 +344,29 @@ where
         }
     } else {
         Err(de::Error::custom("Invalid value type for a u32 field"))
+    }
+}
+
+fn deserialize_vec_u32<'de, D>(deserializer: D) -> Result<Vec<u32>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Deserialize the value as a dynamic type
+    let value: serde_yaml::Value = Deserialize::deserialize(deserializer)?;
+
+    // Try to convert the value to a Vec<u32>
+    if let Some(s) = value.as_str() {
+        let vec: Vec<u32> = s
+            .split(',')
+            .map(str::trim)
+            .map(|item| {
+                item.parse()
+                    .map_err(|_| de::Error::custom("Invalid value for a u32 field"))
+            })
+            .collect::<Result<_, _>>()?;
+        Ok(vec)
+    } else {
+        Err(de::Error::custom("Invalid value type for a Vec<u32> field"))
     }
 }
 
