@@ -1,5 +1,6 @@
 use serde::de;
 use serde::de::Deserializer;
+use serde::de::Visitor;
 use serde::Deserialize;
 use serde_ini;
 use serde_yaml::Value;
@@ -91,6 +92,34 @@ pub struct Program {
     //    pub stderr_logfile_backups: Option<u32>,
     //    #[serde(default)]
     //    pub environment: Option<HashMap<String, String>>,
+}
+
+fn deserialize_vec_u32<'de, D>(deserializer: D) -> Result<Vec<u32>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct VecU32Visitor;
+
+    impl<'de> Visitor<'de> for VecU32Visitor {
+        type Value = Vec<u32>;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("a comma-separated list of u32 values")
+        }
+
+        fn visit_str<E: de::Error>(self, value: &str) -> Result<Self::Value, E> {
+            value
+                .split(',')
+                .map(|s| {
+                    s.trim()
+                        .parse()
+                        .map_err(|_| de::Error::invalid_value(de::Unexpected::Str(s), &self))
+                })
+                .collect()
+        }
+    }
+
+    deserializer.deserialize_str(VecU32Visitor)
 }
 
 fn default_stopwaitsecs() -> u32 {
@@ -344,30 +373,6 @@ where
         }
     } else {
         Err(de::Error::custom("Invalid value type for a u32 field"))
-    }
-}
-
-fn deserialize_vec_u32<'de, D>(deserializer: D, from_ini: bool) -> Result<Vec<u32>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    // Deserialize the value as a dynamic type
-    let value: Value = Deserialize::deserialize(deserializer)?;
-
-    // Try to convert the value to a Vec<u32>
-    if let Some(s) = value.as_str() {
-        let separator = if from_ini { ',' } else { '\n' };
-        let vec: Vec<u32> = s
-            .split(separator)
-            .map(str::trim)
-            .map(|item| {
-                item.parse()
-                    .map_err(|_| de::Error::custom("Invalid value for a u32 field"))
-            })
-            .collect::<Result<_, _>>()?;
-        Ok(vec)
-    } else {
-        Err(de::Error::custom("Invalid value type for a Vec<u32> field"))
     }
 }
 
