@@ -103,7 +103,8 @@ pub struct Program {
     #[serde(default = "default_false")]
     pub stderr_syslog: bool,
     //    #[serde(default)]
-    //pub environment: Option<HashMap<String, String>>,
+    #[serde(deserialize_with = "deserialize_env")]
+    pub environment: Option<HashMap<String, String>>,
     #[serde(default = "default_current_working_dir")]
     pub directory: String,
     #[serde(deserialize_with = "deserialize_u32")]
@@ -111,6 +112,58 @@ pub struct Program {
     pub umask: u32,
     #[serde(default = "default_programserverurl")]
     pub serverurl: Serverurl,
+}
+
+fn deserialize_env<'de, D>(deserializer: D) -> Result<Option<HashMap<String, String>>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Debug, Deserialize)]
+    #[serde(transparent)]
+    struct EnvWrapper(
+        #[serde(deserialize_with = "deserialize_env_inner")] Option<HashMap<String, String>>,
+    );
+
+    #[derive(Debug, Deserialize)]
+    #[serde(untagged)]
+    enum EnvValue {
+        Single(String),
+        Multiple(HashMap<String, String>),
+    }
+
+    fn deserialize_env_inner<'de, D>(
+        deserializer: D,
+    ) -> Result<Option<HashMap<String, String>>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let value: EnvValue = Deserialize::deserialize(deserializer)?;
+
+        match value {
+            EnvValue::Single(single_value) => {
+                let mut environment = HashMap::new();
+                let parts: Vec<&str> = single_value.split(',').collect();
+
+                for part in parts {
+                    let pair: Vec<&str> = part.split(&['=', ':'][..]).collect();
+                    if pair.len() == 2 {
+                        let key = pair[0].trim().to_string();
+                        let value = pair[1].trim_matches('"').to_string();
+                        environment.insert(key, value);
+                    }
+                }
+
+                if environment.is_empty() {
+                    Ok(None)
+                } else {
+                    Ok(Some(environment))
+                }
+            }
+            EnvValue::Multiple(environment) => Ok(Some(environment)),
+        }
+    }
+
+    Ok(EnvWrapper::deserialize(deserializer)?.0)
 }
 
 #[derive(PartialEq, Debug)]

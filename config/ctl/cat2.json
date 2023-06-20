@@ -30,7 +30,7 @@
     "stderr_logfile_backups": "10",
     "stderr_capture_maxbytes": "1MB",
     "stderr_events_enabled": "false",
-    "environment=A=\"1\",B": "2",
+    "environment": "A=\"1\",B\"= \"2\"",
     "serverurl": "AUTO",
     "process_name": "%(program_name)s"
   }
