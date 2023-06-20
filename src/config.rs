@@ -37,27 +37,33 @@ pub struct Program {
     pub command: String,
     #[serde(default = "default_process_name")]
     pub process_name: String,
-    //#[serde(default = "default_numprocs")]
-    //pub numprocs: u32,
-    //#[serde(default = "default_numprocs_start")]
-    //pub numprocs_start: u32,
-    //#[serde(default = "default_priority")]
-    //pub priority: u32,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_numprocs")]
+    pub numprocs: u32,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_numprocs_start")]
+    pub numprocs_start: u32,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_priority")]
+    pub priority: u32,
     #[serde(default = "default_true")]
     #[serde(deserialize_with = "deserialize_bool")]
     pub autostart: bool,
-    //#[serde(default = "default_startsecs")]
-    //pub startsecs: u32,
-    //#[serde(default = "default_startretries")]
-    //pub startretries: u32,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_startsecs")]
+    pub startsecs: u32,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_startretries")]
+    pub startretries: u32,
     #[serde(default = "default_autorestart")]
     pub autorestart: Restart,
     //#[serde(default = "default_exitcodes")]
     //pub exitcodes: Vec<u32>,
     #[serde(default = "default_stopsignal")]
     pub stopsignal: StopSignal,
-    //    #[serde(default = "default_stopwaitsecs")]
-    //    pub stopwaitsecs: u32,
+    #[serde(deserialize_with = "deserialize_u32")]
+    #[serde(default = "default_stopwaitsecs")]
+    pub stopwaitsecs: u32,
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub stopasgroup: bool,
@@ -307,6 +313,31 @@ where
         }
     } else {
         Ok(false)
+    }
+}
+
+fn deserialize_u32<'de, D>(deserializer: D) -> Result<u32, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Deserialize the value as a dynamic type
+    let value: serde_yaml::Value = Deserialize::deserialize(deserializer)?;
+
+    // Try to convert the value to a u32
+    if let Some(n) = value.as_u64() {
+        if let Some(u32_val) = n.try_into().ok() {
+            Ok(u32_val)
+        } else {
+            Err(de::Error::custom("Value exceeds the range of u32"))
+        }
+    } else if let Some(s) = value.as_str() {
+        if let Ok(parsed) = s.parse::<u32>() {
+            Ok(parsed)
+        } else {
+            Err(de::Error::custom("Invalid value for a u32 field"))
+        }
+    } else {
+        Err(de::Error::custom("Invalid value type for a u32 field"))
     }
 }
 
