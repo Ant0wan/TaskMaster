@@ -59,9 +59,11 @@ pub struct Program {
     pub stopwaitsecs: u32,
     #[serde(default = "default_false")]
     pub stopasgroup: bool,
+    #[serde(default = "default_false")]
+    pub killasgroup: bool,
+    #[serde(default = "default_user")]
+    pub user: String,
 
-    #[serde(default)]
-    pub user: Option<String>,
     //#[serde(default)]
     //pub redirect_stderr: Option<bool>,
     #[serde(default)]
