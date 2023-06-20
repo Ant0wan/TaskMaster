@@ -347,17 +347,18 @@ where
     }
 }
 
-fn deserialize_vec_u32<'de, D>(deserializer: D) -> Result<Vec<u32>, D::Error>
+fn deserialize_vec_u32<'de, D>(deserializer: D, from_ini: bool) -> Result<Vec<u32>, D::Error>
 where
     D: Deserializer<'de>,
 {
     // Deserialize the value as a dynamic type
-    let value: serde_yaml::Value = Deserialize::deserialize(deserializer)?;
+    let value: Value = Deserialize::deserialize(deserializer)?;
 
     // Try to convert the value to a Vec<u32>
     if let Some(s) = value.as_str() {
+        let separator = if from_ini { ',' } else { '\n' };
         let vec: Vec<u32> = s
-            .split(',')
+            .split(separator)
             .map(str::trim)
             .map(|item| {
                 item.parse()
