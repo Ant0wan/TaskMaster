@@ -94,6 +94,7 @@ pub struct Program {
     //    #[serde(default)]
     //    pub environment: Option<HashMap<String, String>>,
 }
+
 fn deserialize_vec_u32<'de, D>(deserializer: D) -> Result<Vec<u32>, D::Error>
 where
     D: Deserializer<'de>,
@@ -107,24 +108,15 @@ where
             formatter.write_str("a sequence or comma-separated list of u32 values")
         }
 
-        fn visit_seq<A: SeqAccess<'de>>(self, mut seq: A) -> Result<Self::Value, A::Error> {
-            let mut values = Vec::new();
-
-            while let Some(value) = seq.next_element::<u32>()? {
-                values.push(value);
-            }
-
-            Ok(values)
+        fn visit_seq<A: SeqAccess<'de>>(self, seq: A) -> Result<Self::Value, A::Error> {
+            Deserialize::deserialize(de::value::SeqAccessDeserializer::new(seq))
         }
 
         fn visit_str<E: de::Error>(self, value: &str) -> Result<Self::Value, E> {
             value
                 .split(',')
-                .map(|s| {
-                    s.trim()
-                        .parse()
-                        .map_err(|_| de::Error::invalid_value(de::Unexpected::Str(s), &self))
-                })
+                .map(str::trim)
+                .map(|s| s.parse().map_err(de::Error::custom))
                 .collect()
         }
     }
