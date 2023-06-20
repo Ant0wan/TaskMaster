@@ -57,8 +57,8 @@ pub struct Program {
     pub startretries: u32,
     #[serde(default = "default_autorestart")]
     pub autorestart: Restart,
-    //#[serde(default = "default_exitcodes")]
-    //pub exitcodes: Vec<u32>,
+    //    #[serde(default = "default_exitcodes")]
+    //    pub exitcodes: Vec<u32>,
     #[serde(default = "default_stopsignal")]
     pub stopsignal: StopSignal,
     #[serde(deserialize_with = "deserialize_u32")]
