@@ -24,8 +24,7 @@ pub struct Config {
     include: Option<Include>,
     inet_http_server: Option<InetHttpServer>,
     #[serde(flatten)]
-    //program: Option<HashMap<String, Program>>,
-    program: HashMap<String, Program>,
+    program: Option<HashMap<String, Program>>,
 } // This has to have some combination of options true or false depending whether supervisord or supervosirctl read the config
 
 #[derive(Debug, Deserialize)]
@@ -102,7 +101,6 @@ pub struct Program {
     #[serde(deserialize_with = "deserialize_bool")]
     #[serde(default = "default_false")]
     pub stderr_syslog: bool,
-    //    #[serde(default)]
     #[serde(deserialize_with = "deserialize_env")]
     pub environment: Option<HashMap<String, String>>,
     #[serde(default = "default_current_working_dir")]
