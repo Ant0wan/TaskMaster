@@ -242,10 +242,7 @@ fn deserialize_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
 where
     D: Deserializer<'de>,
 {
-    // Deserialize the value as a dynamic type
     let value: Value = Deserialize::deserialize(deserializer)?;
-
-    // Try to convert the value to a boolean
     if let Some(s) = value.as_str() {
         match s {
             "true" => Ok(true),
@@ -261,10 +258,7 @@ fn deserialize_u32<'de, D>(deserializer: D) -> Result<u32, D::Error>
 where
     D: Deserializer<'de>,
 {
-    // Deserialize the value as a dynamic type
     let value: serde_yaml::Value = Deserialize::deserialize(deserializer)?;
-
-    // Try to convert the value to a u32
     if let Some(n) = value.as_u64() {
         if let Ok(u32_val) = n.try_into() {
             Ok(u32_val)
