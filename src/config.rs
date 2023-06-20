@@ -97,7 +97,7 @@ fn default_directory() -> String {
 }
 
 fn default_chown() -> String {
-    format!("{}{}", default_user(), default_group())
+    format!("{}:{}", default_user(), default_group())
 }
 
 fn default_user() -> String {
