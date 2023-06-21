@@ -1,16 +1,18 @@
 use std::env;
 
 pub fn print_usage() {
-    println!("Usage: /usr/bin/taskmasterctl [options] [action [arguments]]");
-    println!("\nOptions:");
+    println!("supervisorctl -- control applications run by supervisord from the cmd line.\n");
+    println!("Usage: /usr/bin/taskmasterctl [options] [action [arguments]]\n");
+    println!("Options:");
     println!("-c/--configuration FILENAME -- configuration file path (searches if not given)");
     println!("-h/--help -- print usage message and exit");
     println!("-i/--interactive -- start an interactive shell after executing commands");
-    println!("-s/--serverurl URL -- URL on which taskmasterd server is listening (default \"http://localhost:9001\")");
+    println!("-s/--serverurl URL -- URL on which taskmasterd server is listening\n     (default \"http://localhost:9001\")");
     println!("-u/--username USERNAME -- username to use for authentication with server");
     println!("-p/--password PASSWORD -- password to use for authentication with server");
     println!("-r/--history-file -- keep a readline history (if readline is available)");
-    println!("\nActions are commands like \"tail\" or \"stop\". If -i is specified or no action is specified on the command line, a \"shell\" interpreting actions typed interactively is started. Use the action \"help\" to find out about available actions.");
+    println!("\naction [arguments] -- see below\n");
+    println!("Actions are commands like \"tail\" or \"stop\". If -i is specified or no action is\nspecified on the command line, a \"shell\" interpreting actions typed\ninteractively is started. Use the action \"help\" to find out about available\nactions.\n");
 }
 
 pub struct Args {
