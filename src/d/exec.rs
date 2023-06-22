@@ -62,7 +62,15 @@ impl ProcessState {
                 }
             }
             ProcessState::STOPPING => Some(ProcessState::STOPPED), // should implement UNKNOWN ?
-            ProcessState::EXITED => Some(ProcessState::STARTING),
+            ProcessState::EXITED => {
+                if process.Program.autorestart == true {
+                    Some(ProcessState::STARTING)
+                }
+                // When a process is in the EXITED state, it will automatically restart:
+                //never if its autorestart parameter is set to false.
+                //unconditionally if its autorestart parameter is set to true.
+                //conditionally if its autorestart parameter is set to unexpected. If it exited with an exit code that doesn’t match one of the exit codes defined in the exitcodes configuration parameter for the process, it will be restarted.
+            }
             ProcessState::FATAL => Some(ProcessState::STARTING),
             ProcessState::UNKNOWN => exit(2), // + error message,
         }
