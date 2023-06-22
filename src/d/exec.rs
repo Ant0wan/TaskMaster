@@ -15,15 +15,35 @@ impl ProcessState {
     fn transition(&self, config: &Config) -> Option<ProcessState> {
         match self {
             ProcessState::STOPPED => Some(ProcessState::STARTING),
-            ProcessState::STARTING => Some(ProcessState::RUNNING),
+            ProcessState::STARTING => {
+                if config.backoff {
+                    Some(ProcessState::BACKOFF)
+                } else if config.running {
+                    Some(ProcessState::RUNNING)
+                } else if config.stopping {
+                    Some(ProcessState::STOPPING)
+                } else {
+                    Some(ProcessState::UNKNOWN)
+                }
+            }
             ProcessState::RUNNING => {
                 if config.stoppable {
                     Some(ProcessState::STOPPING)
-                } else {
+                } else if config.exit {
                     Some(ProcessState::EXITED)
+                } else {
+                    Some(ProcessState::UNKNOWN)
                 }
             }
-            ProcessState::BACKOFF => Some(ProcessState::STARTING),
+            ProcessState::BACKOFF => {
+                if config.starting {
+                    Some(ProcessState::STARTING)
+                } else if config.fatal {
+                    Some(ProcessState::FATAL)
+                } else {
+                    Some(ProcessState::UNKNOWN)
+                }
+            }
             ProcessState::STOPPING => Some(ProcessState::STOPPED),
             ProcessState::EXITED => Some(ProcessState::STOPPED),
             ProcessState::FATAL => None,
