@@ -14,7 +14,7 @@ enum ProcessState {
 impl ProcessState {
     fn transition(&self, config: &Config) -> Option<ProcessState> {
         match self {
-            ProcessState::STOPPED => Some(ProcessState::STARTING),
+            ProcessState::STOPPED => Some(ProcessState::STARTING), // should implement UNKNOW ?
             ProcessState::STARTING => {
                 if config.backoff {
                     Some(ProcessState::BACKOFF)
@@ -44,10 +44,10 @@ impl ProcessState {
                     Some(ProcessState::UNKNOWN)
                 }
             }
-            ProcessState::STOPPING => Some(ProcessState::STOPPED),
-            ProcessState::EXITED => Some(ProcessState::STOPPED),
-            ProcessState::FATAL => None,
-            ProcessState::UNKNOWN => Some(ProcessState::STOPPED),
+            ProcessState::STOPPING => Some(ProcessState::STOPPED), // should implement UNKNOWN ?
+            ProcessState::EXITED => Some(ProcessState::STARTING),
+            ProcessState::FATAL => Some(ProcessState::STARTING),
+            ProcessState::UNKNOWN => exit(2), // + error message,
         }
     }
 }
