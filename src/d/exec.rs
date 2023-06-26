@@ -1,3 +1,6 @@
+use crate::config::Program;
+use chrono::{DateTime, Utc};
+use std::collections::HashMap;
 use std::process::exit;
 
 enum ProcessState {
@@ -28,54 +31,54 @@ struct ProcessInfo {
     program: Program,                         // Program elements
 }
 
-impl ProcessState {
-    fn transition(&self, process: &ProcessInfo) -> Option<ProcessState> {
-        match self {
-            ProcessState::STOPPED => Some(ProcessState::STARTING), // should implement UNKNOW ?
-            ProcessState::STARTING => {
-                if process.backoff {
-                    Some(ProcessState::BACKOFF)
-                } else if process.running {
-                    Some(ProcessState::RUNNING)
-                } else if process.stopping {
-                    Some(ProcessState::STOPPING)
-                } else {
-                    Some(ProcessState::UNKNOWN)
-                }
-            }
-            ProcessState::RUNNING => {
-                if process.stoppable {
-                    Some(ProcessState::STOPPING)
-                } else if process.exit {
-                    Some(ProcessState::EXITED)
-                } else {
-                    Some(ProcessState::UNKNOWN)
-                }
-            }
-            ProcessState::BACKOFF => {
-                if process.starting {
-                    Some(ProcessState::STARTING)
-                } else if process.fatal {
-                    Some(ProcessState::FATAL)
-                } else {
-                    Some(ProcessState::UNKNOWN)
-                }
-            }
-            ProcessState::STOPPING => Some(ProcessState::STOPPED), // should implement UNKNOWN ?
-            ProcessState::EXITED => {
-                if process.Program.autorestart == true {
-                    Some(ProcessState::STARTING)
-                }
-                // When a process is in the EXITED state, it will automatically restart:
-                //never if its autorestart parameter is set to false.
-                //unconditionally if its autorestart parameter is set to true.
-                //conditionally if its autorestart parameter is set to unexpected. If it exited with an exit code that doesn’t match one of the exit codes defined in the exitcodes configuration parameter for the process, it will be restarted.
-            }
-            ProcessState::FATAL => Some(ProcessState::STARTING),
-            ProcessState::UNKNOWN => exit(2), // + error message,
-        }
-    }
-}
+//impl ProcessState {
+//    fn transition(&self, process: &ProcessInfo) -> Option<ProcessState> {
+//        match self {
+//            ProcessState::STOPPED => Some(ProcessState::STARTING), // should implement UNKNOW ?
+//            ProcessState::STARTING => {
+//                if process.backoff {
+//                    Some(ProcessState::BACKOFF)
+//                } else if process.running {
+//                    Some(ProcessState::RUNNING)
+//                } else if process.stopping {
+//                    Some(ProcessState::STOPPING)
+//                } else {
+//                    Some(ProcessState::UNKNOWN)
+//                }
+//            }
+//            ProcessState::RUNNING => {
+//                if process.stoppable {
+//                    Some(ProcessState::STOPPING)
+//                } else if process.exit {
+//                    Some(ProcessState::EXITED)
+//                } else {
+//                    Some(ProcessState::UNKNOWN)
+//                }
+//            }
+//            ProcessState::BACKOFF => {
+//                if process.starting {
+//                    Some(ProcessState::STARTING)
+//                } else if process.fatal {
+//                    Some(ProcessState::FATAL)
+//                } else {
+//                    Some(ProcessState::UNKNOWN)
+//                }
+//            }
+//            ProcessState::STOPPING => Some(ProcessState::STOPPED), // should implement UNKNOWN ?
+//            ProcessState::EXITED => {
+//                if process.Program.autorestart == true {
+//                    Some(ProcessState::STARTING)
+//                }
+//                // When a process is in the EXITED state, it will automatically restart:
+//                //never if its autorestart parameter is set to false.
+//                //unconditionally if its autorestart parameter is set to true.
+//                //conditionally if its autorestart parameter is set to unexpected. If it exited with an exit code that doesn’t match one of the exit codes defined in the exitcodes configuration parameter for the process, it will be restarted.
+//            }
+//            ProcessState::FATAL => Some(ProcessState::STARTING),
+//            ProcessState::UNKNOWN => exit(2), // + error message,
+//        }
+//    }
+//}
 
 pub fn exec() {
     println!("Hello world !");
