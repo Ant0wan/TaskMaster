@@ -14,13 +14,9 @@ I. Foreword
 II. Introduction
 III. Goals
 IV. General Instructions
-  1 Language constraints
-  2 Defense session
 V. Mandatory Part
 VI. Bonus Part
 VII. Appendix
-  1 Example configuration file
-  2 Trying out supervisor
 VIII. Submission and Peer Correction
 
 Chapter I - Foreword
