@@ -10,18 +10,18 @@ Version: 3
 
 Contents
 --------
-
-.. toctree::
-    :maxdepth: 2
-
-    Foreword
-    Introduction
-    Goals
-    General Instructions
-    Mandatory Part
-    Bonus part
-    Appendix
-    Submission and peer correction
+I. Foreword
+II. Introduction
+III. Goals
+IV. General Instructions
+   IV.1 Language constraints
+   IV.2 Defense session
+V. Mandatory Part
+VI. Bonus Part
+VII. Appendix
+    VII.1 Example configuration file
+    VII.2 Trying out supervisor
+VIII. Submission and Peer Correction
 
 Chapter I - Foreword
 ---------------------
@@ -93,42 +93,41 @@ VII.1 Example configuration file
 
 This is what a configuration file for your taskmaster COULD look like:
 
-```yaml
-programs:
-  nginx:
-    cmd: "/usr/local/bin/nginx -c /etc/nginx/test.conf"
-    numprocs: 1
-    umask: 022
-    workingdir: /tmp
-    autostart: true
-    autorestart: unexpected
-    exitcodes:
-      - 0
-      - 2
-    startretries: 3
-    starttime: 5
-    stopsignal: TERM
-    stoptime: 10
-    stdout: /tmp/nginx.stdout
-    stderr: /tmp/nginx.stderr
-    env:
-      STARTED_BY: taskmaster
-      ANSWER: 42
-  vogsphere:
-    cmd: "/usr/local/bin/vogsphere-worker --no-prefork"
-    numprocs: 8
-    umask: 077
-    workingdir: /tmp
-    autostart: true
-    autorestart: unexpected
-    exitcodes: 0
-    startretries: 3
-    starttime: 5
-    stopsignal: USR1
-    stoptime: 10
-    stdout: /tmp/vgsworker.stdout
-    stderr: /tmp/vgsworker.stderr
-```
+.. code-block:: yaml
+   programs:
+     nginx:
+       cmd: "/usr/local/bin/nginx -c /etc/nginx/test.conf"
+       numprocs: 1
+       umask: 022
+       workingdir: /tmp
+       autostart: true
+       autorestart: unexpected
+       exitcodes:
+         - 0
+         - 2
+       startretries: 3
+       starttime: 5
+       stopsignal: TERM
+       stoptime: 10
+       stdout: /tmp/nginx.stdout
+       stderr: /tmp/nginx.stderr
+       env:
+         STARTED_BY: taskmaster
+         ANSWER: 42
+     vogsphere:
+       cmd: "/usr/local/bin/vogsphere-worker --no-prefork"
+       numprocs: 8
+       umask: 077
+       workingdir: /tmp
+       autostart: true
+       autorestart: unexpected
+       exitcodes: 0
+       startretries: 3
+       starttime: 5
+       stopsignal: USR1
+       stoptime: 10
+       stdout: /tmp/vgsworker.stdout
+       stderr: /tmp/vgsworker.stderr
 
 VII.2 Trying out supervisor
 
