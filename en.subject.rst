@@ -14,13 +14,13 @@ I. Foreword
 II. Introduction
 III. Goals
 IV. General Instructions
-   IV.1 Language constraints
-   IV.2 Defense session
+  1 Language constraints
+  2 Defense session
 V. Mandatory Part
 VI. Bonus Part
 VII. Appendix
-    VII.1 Example configuration file
-    VII.2 Trying out supervisor
+  1 Example configuration file
+  2 Trying out supervisor
 VIII. Submission and Peer Correction
 
 Chapter I - Foreword
@@ -93,7 +93,9 @@ VII.1 Example configuration file
 
 This is what a configuration file for your taskmaster COULD look like:
 
+
 .. code-block:: yaml
+
    programs:
      nginx:
        cmd: "/usr/local/bin/nginx -c /etc/nginx/test.conf"
@@ -114,6 +116,7 @@ This is what a configuration file for your taskmaster COULD look like:
        env:
          STARTED_BY: taskmaster
          ANSWER: 42
+
      vogsphere:
        cmd: "/usr/local/bin/vogsphere-worker --no-prefork"
        numprocs: 8
@@ -129,7 +132,10 @@ This is what a configuration file for your taskmaster COULD look like:
        stdout: /tmp/vgsworker.stdout
        stderr: /tmp/vgsworker.stderr
 
+
+
 VII.2 Trying out supervisor
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 supervisor is available on PyPI as a Python package. To try it out, the simplest way is to create a virtualenv in your home, activate it, and then install supervisor with "pip install supervisor". You may have to install python before, it's available on Homebrew.
