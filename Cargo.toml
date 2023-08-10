@@ -11,7 +11,7 @@ serde_ini = "0.2.0"
 # Getting user from syscall
 users = "0.11.0"
 
-# Getting certain syscalls like UID GUID)
+# Getting certain syscalls like UID GUID
 nix = "0.26.2"
 
 # Date Time UTC
